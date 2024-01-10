@@ -5,18 +5,22 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Objects;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "users")
+@EqualsAndHashCode
+@ToString
 public class User implements UserDetails {
 
     @Id
@@ -36,41 +40,17 @@ public class User implements UserDetails {
     private String password;
 
     @NotNull
+    @Column(nullable = false)
     @Pattern(regexp = "^@.*", message = "The telegram account must started with '@' character")
     private String telegram;
 
     @NotNull
+    @Column(name = "notification_type", nullable = false)
     private NotificationType notificationType;
 
-//    @ManyToOne()
-//    private final Role role;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id == user.id && Objects.equals(fullName, user.fullName) &&
-                Objects.equals(email, user.email) && Objects.equals(password, user.password)
-                && Objects.equals(telegram, user.telegram) && notificationType == user.notificationType;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, fullName, email, password, telegram, notificationType);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", fullName='" + fullName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", telegram='" + telegram + '\'' +
-                ", notificationType=" + notificationType +
-                '}';
-    }
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @Override
     public String getUsername() {
@@ -99,7 +79,6 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return role;
-        return null;
+        return List.of(role);
     }
 }
