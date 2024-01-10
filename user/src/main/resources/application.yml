@@ -7,14 +7,14 @@ spring:
     password: 1234
     url: jdbc:postgresql://localhost:5432/users
     username: notiflow
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-      show-sql: true
+      ddl-auto: update
+    database: postgresql
+    generate-ddl: true
+    show-sql: true
+    defer-datasource-initialization: true
 
 eureka:
   client:
