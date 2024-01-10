@@ -1,0 +1,25 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: user
+  datasource:
+    password: 1234
+    url: jdbc:postgresql://localhost:5432/users
+    username: notiflow
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+      show-sql: true
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8888/eureka
+    fetch-registry: true
+    register-with-eureka: true
+    enabled: true
