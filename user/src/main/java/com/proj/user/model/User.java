@@ -39,8 +39,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @NotNull
-    @Column(nullable = false)
     @Pattern(regexp = "^@.*", message = "The telegram account must started with '@' character")
     private String telegram;
 
@@ -48,6 +46,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "notification_type", nullable = false)
     private NotificationType notificationType;
+
+    @Enumerated(EnumType.STRING)
+    private Provider provider;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
