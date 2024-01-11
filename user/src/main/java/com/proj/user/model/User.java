@@ -45,6 +45,7 @@ public class User implements UserDetails {
     private String telegram;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(name = "notification_type", nullable = false)
     private NotificationType notificationType;
 
