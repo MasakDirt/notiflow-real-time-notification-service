@@ -1,23 +1,13 @@
-CREATE TABLE roles
-(
-    id   SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
-);
+alter table if exists users drop constraint if exists FKp56c1712k691lhsyewcssf40f;
 
-CREATE TABLE users
-(
-    id        SERIAL PRIMARY KEY,
-    role_id   BIGINT,
-    e_mail    VARCHAR(255) NOT NULL,
-    full_name VARCHAR(255) NOT NULL,
-    password  VARCHAR(255) NOT NULL,
-    notification_type  VARCHAR(255) NOT NULL,
-    telegram  VARCHAR(255) NOT NULL
-);
+drop table if exists roles cascade;
+drop table if exists users cascade;
 
-ALTER TABLE roles
-    ADD CONSTRAINT unique_name UNIQUE (name);
+create table roles (id bigserial not null, name varchar(255) not null unique, primary key (id));
+create table users (id bigserial not null, role_id bigint, "e-mail" varchar(255) not null unique,
+                    full_name varchar(255) not null, notification_type varchar(255) not null
+                        check (notification_type in ('TELEGRAM','EMAIL')),
+                    password varchar(255) not null, telegram varchar(255) not null, primary key (id));
 
-ALTER TABLE users
-    ADD CONSTRAINT unique_email UNIQUE (e_mail);
 
+alter table if exists users add constraint FKp56c1712k691lhsyewcssf40f foreign key (role_id) references roles;
