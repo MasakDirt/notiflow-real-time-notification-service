@@ -17,4 +17,8 @@ public enum NotificationType {
         }
         throw new EnumConstantNotPresentException(NotificationType.class, name);
     }
+
+    public String getName() {
+        return name;
+    }
 }
