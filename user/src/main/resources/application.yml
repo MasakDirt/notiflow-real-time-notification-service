@@ -18,6 +18,16 @@ spring:
   sql:
     init:
       mode: always
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-secret:
+            client-id:
+            scope:
+              - email
+              - profile
 
 eureka:
   client:
