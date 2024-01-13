@@ -60,7 +60,7 @@ public class SecurityConfig {
                     .passwordParameter("password")
                     .successHandler((request, response, authentication) -> {
                         log.info("User authorize with email - {} == {}", authentication.getName(), LocalDateTime.now());
-                        response.sendRedirect("/api/users");
+                        response.sendRedirect("/api/v1/users");
                     })
                     .failureUrl("/api/v1/auth/login?error")
                     .permitAll()
@@ -81,7 +81,7 @@ public class SecurityConfig {
                                 CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
                                 userService.processOAuthPostLogin(oauthUser);
                                 log.info("User authorize via google with email - {} == {}", oauthUser.getName(), LocalDateTime.now());
-                                response.sendRedirect("/api/users");
+                                response.sendRedirect("/api/v1/users");
                             }
                     )
             );
