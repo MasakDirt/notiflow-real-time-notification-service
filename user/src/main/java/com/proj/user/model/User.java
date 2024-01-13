@@ -20,7 +20,6 @@ import java.util.List;
 @Setter
 @Table(name = "users")
 @EqualsAndHashCode
-@ToString
 public class User implements UserDetails {
 
     @Id
@@ -53,6 +52,19 @@ public class User implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", telegram='" + telegram + '\'' +
+                ", notificationType=" + notificationType +
+                ", provider=" + provider +
+                '}';
+    }
 
     @Override
     public String getUsername() {
