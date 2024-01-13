@@ -10,7 +10,6 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@ToString
 @Table(name = "roles")
 @EqualsAndHashCode
 @NoArgsConstructor
@@ -36,7 +35,15 @@ public class Role implements GrantedAuthority {
         return "ROLE_" + name;
     }
 
-   public static Role of(String name) {
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    public static Role of(String name) {
         return new Role(name);
     }
 }
