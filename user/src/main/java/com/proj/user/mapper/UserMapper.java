@@ -2,7 +2,6 @@ package com.proj.user.mapper;
 
 import com.proj.user.dto.RegisterRequest;
 import com.proj.user.dto.UpdateRequest;
-import com.proj.user.dto.UserResponse;
 import com.proj.user.model.NotificationType;
 import com.proj.user.model.User;
 import org.mapstruct.Mapper;
