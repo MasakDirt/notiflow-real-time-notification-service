@@ -1,6 +1,7 @@
 package com.proj.user.mapper;
 
 import com.proj.user.dto.RegisterRequest;
+import com.proj.user.dto.UpdateRequest;
 import com.proj.user.dto.UserResponse;
 import com.proj.user.model.NotificationType;
 import com.proj.user.model.User;
@@ -14,6 +15,7 @@ public interface UserMapper {
             expression = "java(NotificationType.getTypeFromName(registerRequest.getNotificationType()))")
     User getUserFromRegisterRequest(RegisterRequest registerRequest);
 
-    @Mapping(target = "notificationType", expression = "java(user.getNotificationType().getName())")
-    UserResponse getUserResponseFromUser(User user);
+    @Mapping(target = "notificationType",
+            expression = "java(NotificationType.getTypeFromName(updateRequest.getNotificationType()))")
+    User getUserFromUpdateRequest(UpdateRequest updateRequest);
 }
