@@ -9,11 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
@@ -25,32 +22,28 @@ import java.time.LocalDateTime;
 public class AuthController {
     private final UserService userService;
     private final UserMapper userMapper;
-    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/login")
     public ModelAndView getLoginForm(ModelMap modelMap) {
         modelMap.addAttribute("loginRequest", new LoginRequest());
+        log.info("LOGIN-FORM-GET == {}", LocalDateTime.now());
         return new ModelAndView("login", modelMap);
     }
 
     @PostMapping("/login")
-    public void login(@Valid LoginRequest loginRequest) {
+    public void login(@Valid LoginRequest loginRequest, HttpServletResponse response) {
         var user = userService.readByEmail(loginRequest.getEmail());
-        checkPasswords(loginRequest.getPassword(), user.getPassword());
+        userService.checkPasswords(loginRequest.getPassword(), user.getPassword());
 
         log.info("=== POST-LOGIN === auth - {} === time - {}.", user.getEmail(), LocalDateTime.now());
-    }
-
-    private void checkPasswords(String rawPass, String encodedPass) {
-        if (!passwordEncoder.matches(rawPass, encodedPass)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong old password!");
-        }
+        RedirectConfig.redirect("/api/v1/users", response);
     }
 
 
     @GetMapping("/register")
     public ModelAndView getRegisterForm(ModelMap modelMap) {
         modelMap.addAttribute("registerRequest", new RegisterRequest());
+        log.info("REGISTER-FORM-GET == {}", LocalDateTime.now());
         return new ModelAndView("register", modelMap);
     }
 
@@ -59,6 +52,6 @@ public class AuthController {
         userService.create(userMapper.getUserFromRegisterRequest(registerRequest), "USER");
         log.info("Register user with email - {} == {}", registerRequest.getEmail(), LocalDateTime.now());
 
-        RedirectConfig.redirect("/api/v1/users", response);
+        RedirectConfig.redirect("/api/v1/auth/login", response);
     }
 }
