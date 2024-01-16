@@ -26,7 +26,5 @@ public class UpdateRequest {
     @Enumerated(EnumType.STRING)
     private String notificationType;
 
-    public static UpdateRequest withId(long id) {
-        return builder().id(id).build();
-    }
+    private int age;
 }
