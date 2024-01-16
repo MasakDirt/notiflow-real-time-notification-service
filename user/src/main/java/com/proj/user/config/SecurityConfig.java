@@ -93,7 +93,7 @@ public class SecurityConfig {
 
     private void logoutRequest(HttpSecurity httpSecurity) {
         try {
-            httpSecurity.logout(logout -> logout.logoutUrl("/logout")
+            httpSecurity.logout(logout -> logout.logoutUrl("/api/v1/logout")
                     .logoutSuccessUrl("/api/v1/auth/login")
                     .permitAll()
             );
