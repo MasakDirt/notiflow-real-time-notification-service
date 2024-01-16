@@ -28,6 +28,9 @@ public class RegisterRequest {
     private String telegram;
 
     @NotNull
+    private int age;
+
+    @NotNull
     @Enumerated(EnumType.STRING)
     private String notificationType;
 }
