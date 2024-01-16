@@ -10,14 +10,14 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     database: postgresql
     generate-ddl: true
     show-sql: true
     defer-datasource-initialization: true
   sql:
     init:
-      mode: always
+      mode: never
   security:
     oauth2:
       client:
