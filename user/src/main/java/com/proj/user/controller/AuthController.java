@@ -26,7 +26,6 @@ public class AuthController {
     @GetMapping("/login")
     public ModelAndView getLoginForm(ModelMap modelMap) {
         modelMap.addAttribute("loginRequest", new LoginRequest());
-        log.info("LOGIN-FORM-GET == {}", LocalDateTime.now());
         return new ModelAndView("login", modelMap);
     }
 
@@ -43,12 +42,11 @@ public class AuthController {
     @GetMapping("/register")
     public ModelAndView getRegisterForm(ModelMap modelMap) {
         modelMap.addAttribute("registerRequest", new RegisterRequest());
-        log.info("REGISTER-FORM-GET == {}", LocalDateTime.now());
         return new ModelAndView("register", modelMap);
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody @Valid RegisterRequest registerRequest, HttpServletResponse response) {
+    public void register(@Valid RegisterRequest registerRequest, HttpServletResponse response) {
         userService.create(userMapper.getUserFromRegisterRequest(registerRequest), "USER");
         log.info("Register user with email - {} == {}", registerRequest.getEmail(), LocalDateTime.now());
 
