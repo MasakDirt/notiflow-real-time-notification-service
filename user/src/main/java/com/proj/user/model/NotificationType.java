@@ -13,7 +13,7 @@ public enum NotificationType {
     }
 
     public static NotificationType getTypeFromName(String name) {
-        for (NotificationType type : NotificationType.values()) {
+        for (NotificationType type : values()) {
             if (type.name.equals(name)) {
                 return type;
             }
