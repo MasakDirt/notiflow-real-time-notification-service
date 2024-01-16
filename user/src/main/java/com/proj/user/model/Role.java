@@ -6,12 +6,12 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "roles")
-@EqualsAndHashCode
 @NoArgsConstructor
 public class Role implements GrantedAuthority {
 
@@ -33,6 +33,19 @@ public class Role implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return "ROLE_" + name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return id == role.id && Objects.equals(name, role.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
     @Override
