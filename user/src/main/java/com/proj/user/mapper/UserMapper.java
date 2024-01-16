@@ -17,4 +17,8 @@ public interface UserMapper {
     @Mapping(target = "notificationType",
             expression = "java(NotificationType.getTypeFromName(updateRequest.getNotificationType()))")
     User getUserFromUpdateRequest(UpdateRequest updateRequest);
+
+    @Mapping(target = "notificationType",
+            expression = "java(user.getNotificationType().getName())")
+    UpdateRequest getUpdateRequestFromUser(User user);
 }
