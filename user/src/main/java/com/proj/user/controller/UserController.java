@@ -27,7 +27,6 @@ public class UserController {
     private final UserMapper userMapper;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ModelAndView getUsers(ModelMap modelMap, Authentication authentication) {
         modelMap.addAttribute("users", userService.getAll(Pageable.ofSize(4)));
         log.info("USERS-GET === {}", authentication.getName());
