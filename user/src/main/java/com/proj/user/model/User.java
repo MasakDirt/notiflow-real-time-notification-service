@@ -43,6 +43,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Provider provider;
 
+    @NotNull
+    @Column(nullable = false)
+    private int age;
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
