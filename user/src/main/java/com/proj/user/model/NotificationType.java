@@ -1,5 +1,8 @@
 package com.proj.user.model;
 
+import lombok.Getter;
+
+@Getter
 public enum NotificationType {
     TELEGRAM("Telegram"), EMAIL("E-mail");
 
@@ -16,9 +19,5 @@ public enum NotificationType {
             }
         }
         throw new EnumConstantNotPresentException(NotificationType.class, name);
-    }
-
-    public String getName() {
-        return name;
     }
 }
