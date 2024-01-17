@@ -1,5 +1,6 @@
 package com.proj.user.service;
 
+import com.proj.user.dto.AddDataRequest;
 import com.proj.user.model.CustomOAuth2User;
 import com.proj.user.model.NotificationType;
 import com.proj.user.model.Provider;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -33,9 +33,9 @@ public class UserService {
         user.setRole(roleService.readByName(roleName));
         setUsersProvider(user);
         log.info("creation user - {} with provider - {}", user.getEmail(), user.getProvider());
-        User saved = userRepository.saveAndFlush(user);
+        userRepository.saveAndFlush(user);
         log.info("User with email {} successfully created", user.getEmail());
-        return saved;
+        return user;
     }
 
     private void setUsersProvider(User user) {
@@ -49,13 +49,11 @@ public class UserService {
                 user.getProvider().equals(Provider.GOOGLE);
     }
 
-    public User processOAuthPostLogin(CustomOAuth2User customOAuth2User) {
-        Optional<User> existUser = userRepository.findByEmail(customOAuth2User.getName());
-        log.info("Login with OAuth2 - {}", customOAuth2User.getName());
-        return existUser.orElseGet(() -> createNewUserFromOAuth2(customOAuth2User));
+    public boolean isUserExist(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 
-    private User createNewUserFromOAuth2(CustomOAuth2User customOAuth2User) {
+    public User createNewUserFromOAuth2(CustomOAuth2User customOAuth2User) {
         User newUser = new User();
         newUser.setEmail(customOAuth2User.getName());
         newUser.setFullName(customOAuth2User.getFullName());
@@ -81,14 +79,19 @@ public class UserService {
     }
 
     public User update(User updated) {
-        User oldUser = readById(updated.getId());
-        updated.setProvider(oldUser.getProvider());
-        updated.setRole(oldUser.getRole());
-        updated.setPassword(oldUser.getPassword());
+        setFieldsToUpdatedUser(updated);
         userRepository.saveAndFlush(updated);
         log.info("Updated user with email {}", updated.getEmail());
 
         return updated;
+    }
+
+    private void setFieldsToUpdatedUser(User updatedUser) {
+        User oldUser = readById(updatedUser.getId());
+        updatedUser.setEmail(oldUser.getEmail());
+        updatedUser.setProvider(oldUser.getProvider());
+        updatedUser.setRole(oldUser.getRole());
+        updatedUser.setPassword(oldUser.getPassword());
     }
 
     public Page<User> getAll(Pageable pageable) {
@@ -100,5 +103,18 @@ public class UserService {
             log.error("Passwords does not matches");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong old password!");
         }
+    }
+
+    public User addDataToOAuth2User(long id, AddDataRequest addDataRequest) {
+        User userToUpdate = setDataToOAuth2(id, addDataRequest);
+        return userRepository.saveAndFlush(userToUpdate);
+    }
+
+    private User setDataToOAuth2(long id, AddDataRequest addDataRequest) {
+        User userToUpdate = readById(id);
+        userToUpdate.setAge(addDataRequest.getAge());
+        userToUpdate.setTelegram(addDataRequest.getTelegram());
+        userToUpdate.setNotificationType(NotificationType.getTypeFromName(addDataRequest.getNotificationType()));
+        return userToUpdate;
     }
 }
