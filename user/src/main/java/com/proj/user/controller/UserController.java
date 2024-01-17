@@ -1,6 +1,7 @@
 package com.proj.user.controller;
 
 import com.proj.user.config.RedirectConfig;
+import com.proj.user.dto.AddDataRequest;
 import com.proj.user.dto.UpdateRequest;
 import com.proj.user.mapper.UserMapper;
 import com.proj.user.service.AuthUserService;
@@ -72,6 +73,23 @@ public class UserController {
                        HttpServletResponse response, Authentication authentication) {
         userService.update(userMapper.getUserFromUpdateRequest(updateRequest));
         log.info("UPDATE-POST === {}, time = {}", authentication.getPrincipal(), LocalDateTime.now());
+        RedirectConfig.redirect("/api/v1/users", response);
+    }
+
+    @GetMapping("/{id}/add-data")
+    @PreAuthorize("@authUserService.isUserAuthWithGoogle(#id)")
+    public ModelAndView getAddingDataForm(@PathVariable long id, ModelMap modelMap) {
+        modelMap.addAttribute("id", id);
+        modelMap.addAttribute("addDataRequest", new AddDataRequest());
+        return new ModelAndView("add-data", modelMap);
+    }
+
+    @PostMapping("/{id}/add-data")
+    @PreAuthorize("@authUserService.isUserAuthWithGoogle(#id)")
+    public void addingDataToOAuthUser(@PathVariable long id, @Valid AddDataRequest addDataRequest,
+                                      Authentication authentication, HttpServletResponse response) {
+        userService.addDataToOAuth2User(id, addDataRequest);
+        log.info("ADD-OAUTH2-DATA === {}, time = {}", authentication.getPrincipal(), LocalDateTime.now());
         RedirectConfig.redirect("/api/v1/users", response);
     }
 }
