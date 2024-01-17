@@ -5,8 +5,10 @@ import com.proj.user.exception.CustomLoginException;
 import com.proj.user.exception.GoogleLoginException;
 import com.proj.user.exception.LogoutException;
 import com.proj.user.model.CustomOAuth2User;
+import com.proj.user.model.User;
 import com.proj.user.service.CustomOAuth2UserService;
 import com.proj.user.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +20,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -78,10 +81,9 @@ public class SecurityConfig {
                     .loginPage("/api/v1/auth/login")
                     .userInfoEndpoint(customOAuth2UserService)
                     .successHandler((request, response, authentication) -> {
-                                CustomOAuth2User oauthUser = (CustomOAuth2User) authentication.getPrincipal();
-                                userService.processOAuthPostLogin(oauthUser);
-                                log.info("User authorize via google with email - {} == {}", oauthUser.getName(), LocalDateTime.now());
-                                response.sendRedirect("/api/v1/users");
+                                CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+                                String email = customOAuth2User.getName();
+                                processOAuth2Authorization(customOAuth2User, email, response);
                             }
                     )
             );
@@ -91,8 +93,28 @@ public class SecurityConfig {
         }
     }
 
+    private void processOAuth2Authorization(CustomOAuth2User customOAuth2User, String email, HttpServletResponse response) throws IOException {
+        if (userService.isUserExist(email)) {
+            loginOAuth2UserLogic(email, response);
+        } else {
+            createOAuth2UserLogic(customOAuth2User, email, response);
+        }
+    }
+
+    private void createOAuth2UserLogic(CustomOAuth2User customOAuth2User, String email, HttpServletResponse response) throws IOException {
+        User  createdUser = userService.createNewUserFromOAuth2(customOAuth2User);
+        log.info("User register via google with email - {} == {}", email, LocalDateTime.now());
+        response.sendRedirect("/api/v1/users/" + createdUser.getId() + "/add-data");
+    }
+
+    private void loginOAuth2UserLogic(String email, HttpServletResponse response)  throws IOException {
+        log.info("User authorize via google with email - {} == {}", email, LocalDateTime.now());
+        response.sendRedirect("/api/v1/users");
+    }
+
     private void logoutRequest(HttpSecurity httpSecurity) {
         try {
+            // todo: check the error of logout
             httpSecurity.logout(logout -> logout.logoutUrl("/api/v1/logout")
                     .logoutSuccessUrl("/api/v1/auth/login")
                     .permitAll()
