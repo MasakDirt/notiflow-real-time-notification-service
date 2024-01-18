@@ -114,8 +114,8 @@ public class SecurityConfig {
 
     private void logoutRequest(HttpSecurity httpSecurity) {
         try {
-            // todo: check the error of logout
-            httpSecurity.logout(logout -> logout.logoutUrl("/api/v1/logout")
+            httpSecurity.logout(logout -> logout
+                    .logoutUrl("/logout")
                     .logoutSuccessUrl("/api/v1/auth/login")
                     .permitAll()
             );
