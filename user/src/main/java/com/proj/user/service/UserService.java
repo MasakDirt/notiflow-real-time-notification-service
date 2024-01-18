@@ -117,4 +117,9 @@ public class UserService {
         userToUpdate.setNotificationType(NotificationType.getTypeFromName(addDataRequest.getNotificationType()));
         return userToUpdate;
     }
+
+    public void delete(User user) {
+        userRepository.delete(user);
+        log.info("user with email {} successfully deleted", user.getEmail());
+    }
 }
