@@ -45,6 +45,20 @@
             background-color: #d38666;
         }
 
+        .btn-delete {
+            background-color: #000000;
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .btn-delete:hover {
+            background-color: #ed0909;
+        }
+
         .pagination .page-item .page-link {
             background-color: #e0b566;
             border-color: #e0b566;
@@ -60,7 +74,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 100px;
+            margin-top: 200px;
         }
 
         .sorting-form {
@@ -129,7 +143,6 @@
 <header id="header-id">
     <div th:replace="~{header.html}"></div>
 </header>
-
 <div class="sorting-container">
     <form class="sorting-form" th:action="@{/api/v1/users}">
         <h6>Sort By:</h6>
@@ -169,11 +182,16 @@
                                 <h2 class="mb-2" th:text="${user.fullName}"></h2>
                             </div>
                             <div class="form-group">
-                                <h5 th:text="'Email: ' + ${user.email}"></h5>
+                                <h5 th:text="'E-mail: ' + ${user.email}"></h5>
+                            </div>
+                            <div class="form-group" th:unless="${isAdmin || email == user.email}">
+                                <a class="btn btn-yellow">Get Notification</a>
                             </div>
                             <div class="form-group" th:if="${isAdmin || email == user.email}">
                                 <a class="btn btn-yellow"
                                    th:href="@{|/api/v1/users/${user.id}/update|}">Update</a>
+                                <a class="btn btn-delete"
+                                   th:href="@{|/api/v1/users/${user.id}/delete|}">Delete</a>
                             </div>
                         </div>
 
@@ -186,6 +204,9 @@
                             </div>
                             <div class="form-group">
                                 <h5 th:text="'Age: ' + ${user.age}"></h5>
+                            </div>
+                            <div class="form-group" th:if="${isAdmin}">
+                                <a class="btn btn-yellow">Get Notification</a>
                             </div>
                         </div>
                     </div>
