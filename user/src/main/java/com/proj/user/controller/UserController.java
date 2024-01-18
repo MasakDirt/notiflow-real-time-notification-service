@@ -4,6 +4,7 @@ import com.proj.user.config.RedirectConfig;
 import com.proj.user.dto.AddDataRequest;
 import com.proj.user.dto.UpdateRequest;
 import com.proj.user.mapper.UserMapper;
+import com.proj.user.model.User;
 import com.proj.user.service.AuthUserService;
 import com.proj.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -72,7 +73,7 @@ public class UserController {
     public void update(@PathVariable long id, @Valid UpdateRequest updateRequest,
                        HttpServletResponse response, Authentication authentication) {
         userService.update(userMapper.getUserFromUpdateRequest(updateRequest));
-        log.info("UPDATE-POST === {}, time = {}", authentication.getPrincipal(), LocalDateTime.now());
+        log.info("UPDATE-USER === {}, time = {}", authentication.getPrincipal(), LocalDateTime.now());
         RedirectConfig.redirect("/api/v1/users", response);
     }
 
@@ -91,5 +92,22 @@ public class UserController {
         userService.addDataToOAuth2User(id, addDataRequest);
         log.info("ADD-OAUTH2-DATA === {}, time = {}", authentication.getPrincipal(), LocalDateTime.now());
         RedirectConfig.redirect("/api/v1/users", response);
+    }
+
+    @GetMapping("/{id}/delete")
+    @PreAuthorize("@authUserService.isUserAdminOrSame(#id, authentication.name)")
+    public void delete(@PathVariable long id, Authentication authentication, HttpServletResponse response) {
+        User user = userService.readById(id);
+        userService.delete(user);
+        log.info("DELETE-USER === {}, time = {}", authentication.getName(), LocalDateTime.now());
+        redirectAfterDelete(authentication.getName(), user.getEmail(), response);
+    }
+
+    private void redirectAfterDelete(String authUserEmail, String deletedUserEmail, HttpServletResponse response) {
+        if (authUserService.isAdmin(authUserEmail) && !authUserEmail.equals(deletedUserEmail)) {
+            RedirectConfig.redirect("/api/v1/users", response);
+        } else {
+            RedirectConfig.redirect("/api/v1/auth/login", response);
+        }
     }
 }
