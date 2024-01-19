@@ -49,7 +49,7 @@ public class RoleRepositoryTests {
     }
 
     @Test
-    public void testInvalidFindUserByEmail() {
+    public void testInvalidFindRoleByName() {
         String name = "INVALID_ROLE";
         Optional<Role> actual = roleRepository.findByName(name);
         assertTrue(actual.isEmpty());
