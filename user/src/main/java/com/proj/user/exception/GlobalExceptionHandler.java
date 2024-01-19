@@ -41,7 +41,8 @@ public class GlobalExceptionHandler {
         return getErrorResponse(request, HttpStatus.BAD_REQUEST, message);
     }
 
-    @ExceptionHandler({ConstraintViolationException.class, IllegalArgumentException.class, LoginException.class})
+    @ExceptionHandler({ConstraintViolationException.class, IllegalArgumentException.class,
+            LoginException.class, NullRoleNameException.class})
     public ModelAndView handleBadRequestExceptions(HttpServletRequest request, RuntimeException ex) {
         return getErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
     }
@@ -78,11 +79,11 @@ public class GlobalExceptionHandler {
         ModelMap map = new ModelMap();
         map.addAttribute("errorResponse",
                 ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(httpStatus)
-                .message(message)
-                .path(request.getRequestURL().toString())
-                .build()
+                        .timestamp(LocalDateTime.now())
+                        .status(httpStatus)
+                        .message(message)
+                        .path(request.getRequestURL().toString())
+                        .build()
         );
         map.addAttribute("formatter", DateTimeFormatter.ofPattern("h:mm a"));
         return new ModelAndView("error", map);
