@@ -1,5 +1,6 @@
 package com.proj.user.service;
 
+import com.proj.user.exception.NullRoleNameException;
 import com.proj.user.model.Role;
 import com.proj.user.repository.RoleRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,7 +25,7 @@ public class RoleService {
     private void checkValidRoleName(String name) {
         if (name == null || name.trim().isEmpty()) {
             log.error("This role name is empty or null - {}", name);
-            throw new NullPointerException("The name of Role cannot be empty!");
+            throw new NullRoleNameException("The name of Role cannot be empty!");
         }
     }
 
