@@ -1,6 +1,6 @@
 package com.proj.user.service;
 
-import com.proj.user.exception.NullRoleNameException;
+import com.proj.user.exception.RoleNameException;
 import com.proj.user.model.Role;
 import com.proj.user.repository.RoleRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,7 +15,7 @@ public class RoleService {
 
     private final RoleRepository roleRepository;
 
-    public Role create(String name) {
+    public Role createWithValidName(String name) {
         checkValidRoleName(name);
         Role created = roleRepository.save(Role.of(name));
         log.info("Role with name {} successfully created", name);
@@ -23,10 +23,14 @@ public class RoleService {
     }
 
     private void checkValidRoleName(String name) {
-        if (name == null || name.trim().isEmpty()) {
-            log.error("This role name is empty or null - {}", name);
-            throw new NullRoleNameException("The name of Role cannot be empty!");
+        if (isInvalidRoleName(name)) {
+            log.error("This role name is invalid - {}", name == null ? null : "empty");
+            throw new RoleNameException("The name of Role cannot be empty!");
         }
+    }
+
+    private boolean isInvalidRoleName(String name) {
+        return name == null || name.trim().isEmpty();
     }
 
     public Role readByName(String name) {
