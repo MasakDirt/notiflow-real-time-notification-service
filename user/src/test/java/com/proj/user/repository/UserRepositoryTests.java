@@ -55,7 +55,7 @@ public class UserRepositoryTests {
         user.setAge(23);
         user.setPassword("1234");
         user.setProvider(Provider.GOOGLE);
-        user.setRole(roleService.create("ADMIN"));
+        user.setRole(roleService.createWithValidName("ADMIN"));
 
         return user;
     }
