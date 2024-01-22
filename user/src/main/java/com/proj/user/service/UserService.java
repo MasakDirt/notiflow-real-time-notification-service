@@ -27,24 +27,37 @@ public class UserService {
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
-    public User create(User user, String roleName) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        log.info("users password is encoded");
-        user.setRole(roleService.readByName(roleName));
-        setUsersProvider(user);
-        log.info("creation user - {} with provider - {}", user.getEmail(), user.getProvider());
+    public User saveWithSettingFields(User user, String roleName) {
+        setImportantUsersFields(user, roleName);
         userRepository.saveAndFlush(user);
         log.info("User with email {} successfully created", user.getEmail());
         return user;
     }
 
+    private void setImportantUsersFields(User user, String roleName) {
+        setUsersPassword(user);
+        setUsersRole(user, roleName);
+        setUsersProvider(user);
+        log.info("creation user - {} with provider - {}", user.getEmail(), user.getProvider());
+    }
+
+    private void setUsersPassword(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        log.info("users password is encoded");
+    }
+
+    private void setUsersRole(User user, String roleName) {
+        user.setRole(roleService.readByName(roleName));
+        log.info("users role set to {}", roleName);
+    }
+
     private void setUsersProvider(User user) {
-        if (!isUserHasGoogleProvider(user)) {
+        if (!hasUserGoogleProvider(user)) {
             user.setProvider(Provider.LOCAL);
         }
     }
 
-    private boolean isUserHasGoogleProvider(User user) {
+    private boolean hasUserGoogleProvider(User user) {
         return Objects.nonNull(user.getProvider()) &&
                 user.getProvider().equals(Provider.GOOGLE);
     }
@@ -61,7 +74,7 @@ public class UserService {
         newUser.setProvider(Provider.GOOGLE);
         newUser.setNotificationType(NotificationType.EMAIL);
 
-        return create(newUser, "USER");
+        return saveWithSettingFields(newUser, "USER");
     }
 
     public User readById(long id) {
@@ -106,11 +119,11 @@ public class UserService {
     }
 
     public User addDataToOAuth2User(long id, AddDataRequest addDataRequest) {
-        User userToUpdate = setDataToOAuth2(id, addDataRequest);
+        User userToUpdate = setFieldsToOAuth2(id, addDataRequest);
         return userRepository.saveAndFlush(userToUpdate);
     }
 
-    private User setDataToOAuth2(long id, AddDataRequest addDataRequest) {
+    private User setFieldsToOAuth2(long id, AddDataRequest addDataRequest) {
         User userToUpdate = readById(id);
         userToUpdate.setAge(addDataRequest.getAge());
         userToUpdate.setTelegram(addDataRequest.getTelegram());
