@@ -1,10 +1,10 @@
 package com.proj.user.service;
 
-import com.proj.user.exception.NullRoleNameException;
+import com.proj.user.exception.RoleNameException;
 import com.proj.user.model.Role;
 import com.proj.user.repository.RoleRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -41,33 +41,33 @@ public class RoleServiceTests {
     }
 
     @Test
-    public void testValidCreate() {
-        int sizeBefore = roleRepository.findAll().size();
+    public void testValidCreateWithValidName() {
+        int sizeBeforeCreation = roleRepository.findAll().size();
 
         String name = "TEST";
         Role expected = Role.of(name);
-        Role actual = roleService.create(name);
+        Role actual = roleService.createWithValidName(name);
         expected.setId(actual.getId());
         assertEquals(expected, actual);
 
-        int sizeAfter = roleRepository.findAll().size();
-        assertTrue(sizeBefore < sizeAfter);
+        int sizeAfterCreation = roleRepository.findAll().size();
+        assertTrue(sizeBeforeCreation < sizeAfterCreation);
     }
 
     @ParameterizedTest
-    @MethodSource("getNameArguments")
-    public void testInvalidCreate(String name) {
-        assertThrows(NullRoleNameException.class, () -> roleService.create(name));
+    @MethodSource("getInvalidNameArguments")
+    public void testInvalidCreateWithValidName(String name) {
+        assertThrows(RoleNameException.class, () -> roleService.createWithValidName(name));
     }
 
-    private static Stream<String> getNameArguments() {
+    private static Stream<String> getInvalidNameArguments() {
         return Stream.of("  ", null);
     }
 
     @Test
     public void testValidFindRoleByName() {
         String name = "CREATED";
-        Role expected = roleService.create(name);
+        Role expected = roleService.createWithValidName(name);
         Role actual = roleService.readByName(name);
 
         assertEquals(expected, actual);
