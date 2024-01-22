@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({ConstraintViolationException.class, IllegalArgumentException.class,
-            LoginException.class, NullRoleNameException.class})
+            LoginException.class, RoleNameException.class})
     public ModelAndView handleBadRequestExceptions(HttpServletRequest request, RuntimeException ex) {
         return getErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
     }
