@@ -245,6 +245,10 @@ public class UserControllerTests {
                 .andExpect(redirectedUrl("/api/v1/users"));
     }
 
+    private long getUserId() {
+        return userService.readByEmail("user@mail.co").getId();
+    }
+
     @Test
     @WithMockUser(username = "user@mail.co")
     public void testForbiddenDeleteUser() throws Exception {
@@ -253,10 +257,6 @@ public class UserControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(getErrorModelAttributes())
                 .andExpect(getErrorViewName());
-    }
-
-    private long getUserId() {
-        return userService.readByEmail("user@mail.co").getId();
     }
 
     private long getAdminId() {
