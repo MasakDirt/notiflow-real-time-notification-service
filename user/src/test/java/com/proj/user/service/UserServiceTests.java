@@ -177,7 +177,7 @@ public class UserServiceTests {
 
     @Test
     public void testValidCreateNewUserFromOAuth2() {
-        Role expectedRole = roleService.createWithValidName("USER");
+        Role expectedRole = roleService.readByName("USER");
         CustomOAuth2User customOAuth2User = createOAuth2User();
         User expected = createExpectedUser(customOAuth2User);
         User actual = userService.createNewUserFromOAuth2(customOAuth2User);
