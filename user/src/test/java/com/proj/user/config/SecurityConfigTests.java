@@ -1,6 +1,5 @@
 package com.proj.user.config;
 
-import com.proj.user.TestAdvice;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
