@@ -1,0 +1,58 @@
+<html  xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .btn-header-back{
+            background-color: #fff;
+            border-color: #fff;
+            color: #000;
+            font-weight: bold;
+            font-size: 18px;
+            padding: 5px 30px;
+            position: fixed;
+            top: 0;
+            left: 1px
+        }
+
+        .btn-header-logout{
+            background-color: #fff;
+            border-color: #fff;
+            color: #000;
+            font-weight: bold;
+            font-size: 10px;
+            position: fixed;
+            top: 0;
+            right: 0;
+            padding: 6px;
+        }
+
+        .btn-header-back:hover {
+            background-color: #3fcad9;
+        }
+
+        .btn-header-logout:hover {
+            background-color: #1b2526;
+            color: #d38666;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+        }
+
+        .text-style {
+            font-family: Brush_Script, cursive;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<button class="btn btn-header-back" th:onclick="window.history.back()">⬅</button>
+<img class="logo" th:src="@{http://localhost:8090/api/v1/logo}" alt="Logo">
+<h1 class="text-style">Noti-Flow</h1>
+<form th:action="@{/logout}" method="post">
+    <button class="btn btn-header-logout" type="submit">Logout</button>
+</form>
+</body>
+</html>
