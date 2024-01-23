@@ -41,8 +41,13 @@ public class GlobalExceptionHandler {
         return getErrorResponse(request, HttpStatus.BAD_REQUEST, message);
     }
 
-    @ExceptionHandler({ConstraintViolationException.class, IllegalArgumentException.class,
-            LoginException.class, RoleNameException.class})
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ModelAndView handleConstraintViolationException(HttpServletRequest request, ConstraintViolationException ex) {
+        return getErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, LoginException.class,
+            RoleNameException.class, EnumConstantNotPresentException.class})
     public ModelAndView handleBadRequestExceptions(HttpServletRequest request, RuntimeException ex) {
         return getErrorResponse(request, HttpStatus.BAD_REQUEST, ex.getMessage());
     }
