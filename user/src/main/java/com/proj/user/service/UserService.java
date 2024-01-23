@@ -27,6 +27,18 @@ public class UserService {
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
+    public User createNewUserFromOAuth2(CustomOAuth2User customOAuth2User) {
+        User newUser = new User();
+        newUser.setEmail(customOAuth2User.getName());
+        newUser.setFullName(customOAuth2User.getFullName());
+        newUser.setPassword(customOAuth2User.getAttributes().get("sub").toString());
+        newUser.setProvider(Provider.GOOGLE);
+        newUser.setNotificationType(NotificationType.EMAIL);
+        newUser.setTelegram("@yourtelegram");
+
+        return saveWithSettingFields(newUser, "USER");
+    }
+
     public User saveWithSettingFields(User user, String roleName) {
         setImportantUsersFields(user, roleName);
         userRepository.saveAndFlush(user);
@@ -66,17 +78,6 @@ public class UserService {
         return userRepository.findByEmail(email).isPresent();
     }
 
-    public User createNewUserFromOAuth2(CustomOAuth2User customOAuth2User) {
-        User newUser = new User();
-        newUser.setEmail(customOAuth2User.getName());
-        newUser.setFullName(customOAuth2User.getFullName());
-        newUser.setPassword(customOAuth2User.getAttributes().get("sub").toString());
-        newUser.setProvider(Provider.GOOGLE);
-        newUser.setNotificationType(NotificationType.EMAIL);
-
-        return saveWithSettingFields(newUser, "USER");
-    }
-
     public User readById(long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found!"));
@@ -111,7 +112,7 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    public void checkPasswords(String rawPass, String encodedPass) {
+    public void checkInvalidPasswords(String rawPass, String encodedPass) {
         if (!passwordEncoder.matches(rawPass, encodedPass)) {
             log.error("Passwords does not matches");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong old password!");
@@ -119,15 +120,16 @@ public class UserService {
     }
 
     public User addDataToOAuth2User(long id, AddDataRequest addDataRequest) {
-        User userToUpdate = setFieldsToOAuth2(id, addDataRequest);
+        User userToUpdate = setNewFieldsToOAuth2(id, addDataRequest);
         return userRepository.saveAndFlush(userToUpdate);
     }
 
-    private User setFieldsToOAuth2(long id, AddDataRequest addDataRequest) {
+    private User setNewFieldsToOAuth2(long id, AddDataRequest addDataRequest) {
         User userToUpdate = readById(id);
         userToUpdate.setAge(addDataRequest.getAge());
         userToUpdate.setTelegram(addDataRequest.getTelegram());
-        userToUpdate.setNotificationType(NotificationType.getTypeFromName(addDataRequest.getNotificationType()));
+        userToUpdate.setNotificationType(
+                NotificationType.getTypeFromName(addDataRequest.getNotificationType()));
         return userToUpdate;
     }
 
