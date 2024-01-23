@@ -1,9 +1,6 @@
 package com.proj.user.config;
 
-import com.proj.user.exception.AuthorizationException;
-import com.proj.user.exception.CustomLoginException;
-import com.proj.user.exception.GoogleLoginException;
-import com.proj.user.exception.LogoutException;
+import com.proj.user.exception.*;
 import com.proj.user.model.CustomOAuth2User;
 import com.proj.user.model.User;
 import com.proj.user.service.CustomOAuth2UserService;
@@ -18,6 +15,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.io.IOException;
@@ -38,6 +36,7 @@ public class SecurityConfig {
         loginRequest(httpSecurity);
         loginWithOauth2Request(httpSecurity);
         logoutRequest(httpSecurity);
+        disableCsrf(httpSecurity);
         return httpSecurity.build();
     }
 
@@ -89,7 +88,8 @@ public class SecurityConfig {
             );
         } catch (Exception exception) {
             log.error("Login with {Google} exception - {}", exception.getCause().getMessage());
-            throw new GoogleLoginException("Something went wrong, sorry it`s our mistake, we are already working on it!⚒️");
+            throw new GoogleLoginException("Something went wrong, sorry it`s our mistake," +
+                    " we are already working on it!⚒️");
         }
     }
 
@@ -121,7 +121,18 @@ public class SecurityConfig {
             );
         } catch (Exception exception) {
             log.error("Logout exception - {}", exception.getCause().getMessage());
-            throw new LogoutException("Something went wrong, sorry it`s our mistake, we are already working on it!⚒️");
+            throw new LogoutException("Something went wrong, sorry it`s our mistake," +
+                    " we are already working on it!⚒️");
+        }
+    }
+
+    private void disableCsrf(HttpSecurity httpSecurity) {
+        try {
+            httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        } catch (Exception exception) {
+            log.error("Csrf disabling exception - {}", exception.getCause().getMessage());
+            throw new CsrfException("Something went wrong with our config," +
+                    " sorry it`s our mistake, we are already working on it!⚒️");
         }
     }
 
