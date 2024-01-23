@@ -1,9 +1,6 @@
 package com.proj.user.config;
 
-import com.proj.user.exception.AuthorizationException;
-import com.proj.user.exception.CustomLoginException;
-import com.proj.user.exception.GoogleLoginException;
-import com.proj.user.exception.LogoutException;
+import com.proj.user.exception.*;
 import com.proj.user.model.CustomOAuth2User;
 import com.proj.user.model.User;
 import com.proj.user.service.CustomOAuth2UserService;
@@ -18,6 +15,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.io.IOException;
@@ -38,6 +36,7 @@ public class SecurityConfig {
         loginRequest(httpSecurity);
         loginWithOauth2Request(httpSecurity);
         logoutRequest(httpSecurity);
+        disableCsrf(httpSecurity);
         return httpSecurity.build();
     }
 
@@ -83,17 +82,21 @@ public class SecurityConfig {
                     .successHandler((request, response, authentication) -> {
                                 CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
                                 String email = customOAuth2User.getName();
-                                processOAuth2Authorization(customOAuth2User, email, response);
+                                chooseOAuth2AuthorizationLogicBasedOnIfItCreated(customOAuth2User, email, response);
                             }
                     )
             );
         } catch (Exception exception) {
             log.error("Login with {Google} exception - {}", exception.getCause().getMessage());
-            throw new GoogleLoginException("Something went wrong, sorry it`s our mistake, we are already working on it!⚒️");
+            throw new GoogleLoginException("Something went wrong, sorry it`s our mistake," +
+                    " we are already working on it!⚒️");
         }
     }
 
-    private void processOAuth2Authorization(CustomOAuth2User customOAuth2User, String email, HttpServletResponse response) throws IOException {
+    private void chooseOAuth2AuthorizationLogicBasedOnIfItCreated(
+            CustomOAuth2User customOAuth2User, String email,
+            HttpServletResponse response) throws IOException {
+
         if (userService.isUserExist(email)) {
             loginOAuth2UserLogic(email, response);
         } else {
@@ -101,15 +104,15 @@ public class SecurityConfig {
         }
     }
 
-    private void createOAuth2UserLogic(CustomOAuth2User customOAuth2User, String email, HttpServletResponse response) throws IOException {
-        User  createdUser = userService.createNewUserFromOAuth2(customOAuth2User);
-        log.info("User register via google with email - {} == {}", email, LocalDateTime.now());
-        response.sendRedirect("/api/v1/users/" + createdUser.getId() + "/add-data");
-    }
-
-    private void loginOAuth2UserLogic(String email, HttpServletResponse response)  throws IOException {
+    private void loginOAuth2UserLogic(String email, HttpServletResponse response) throws IOException {
         log.info("User authorize via google with email - {} == {}", email, LocalDateTime.now());
         response.sendRedirect("/api/v1/users");
+    }
+
+    private void createOAuth2UserLogic(CustomOAuth2User customOAuth2User, String email, HttpServletResponse response) throws IOException {
+        User createdUser = userService.createNewUserFromOAuth2(customOAuth2User);
+        log.info("User register via google with email - {} == {}", email, LocalDateTime.now());
+        response.sendRedirect("/api/v1/users/" + createdUser.getId() + "/add-data");
     }
 
     private void logoutRequest(HttpSecurity httpSecurity) {
@@ -121,7 +124,18 @@ public class SecurityConfig {
             );
         } catch (Exception exception) {
             log.error("Logout exception - {}", exception.getCause().getMessage());
-            throw new LogoutException("Something went wrong, sorry it`s our mistake, we are already working on it!⚒️");
+            throw new LogoutException("Something went wrong, sorry it`s our mistake," +
+                    " we are already working on it!⚒️");
+        }
+    }
+
+    private void disableCsrf(HttpSecurity httpSecurity) {
+        try {
+            httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        } catch (Exception exception) {
+            log.error("Csrf disabling exception - {}", exception.getCause().getMessage());
+            throw new CsrfException("Something went wrong with our config," +
+                    " sorry it`s our mistake, we are already working on it!⚒️");
         }
     }
 

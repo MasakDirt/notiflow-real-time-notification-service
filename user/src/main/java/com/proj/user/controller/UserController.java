@@ -62,7 +62,6 @@ public class UserController {
     public ModelAndView getUpdateForm(@PathVariable long id, ModelMap modelMap, Authentication authentication) {
         var user = userService.readById(id);
         modelMap.addAttribute("updateRequest", userMapper.getUpdateRequestFromUser(user));
-
         log.info("UPDATE-FORM-GET === {}, time = {}", authentication.getPrincipal(), LocalDateTime.now());
 
         return new ModelAndView("user-update", modelMap);
@@ -97,14 +96,21 @@ public class UserController {
     @GetMapping("/{id}/delete")
     @PreAuthorize("@authUserService.isUserAdminOrSame(#id, authentication.name)")
     public void delete(@PathVariable long id, Authentication authentication, HttpServletResponse response) {
-        User user = userService.readById(id);
-        userService.delete(user);
+        User userToDelete = userService.readById(id);
+        boolean isAuthUserAdminAndStillInDB = isAuthUserAdminAndDoesNotDeleteHimself(
+                authentication.getName(), userToDelete.getEmail());
+
+        userService.delete(userToDelete);
         log.info("DELETE-USER === {}, time = {}", authentication.getName(), LocalDateTime.now());
-        redirectAfterDelete(authentication.getName(), user.getEmail(), response);
+        chooseRedirectAfterDelete(isAuthUserAdminAndStillInDB, response);
     }
 
-    private void redirectAfterDelete(String authUserEmail, String deletedUserEmail, HttpServletResponse response) {
-        if (authUserService.isAdmin(authUserEmail) && !authUserEmail.equals(deletedUserEmail)) {
+    private boolean isAuthUserAdminAndDoesNotDeleteHimself(String authUserEmail, String deletedUserEmail) {
+        return authUserService.isAdmin(authUserEmail) && !authUserEmail.equals(deletedUserEmail);
+    }
+
+    private void chooseRedirectAfterDelete(boolean isAuthUserAdminAndStillInDB, HttpServletResponse response) {
+        if (isAuthUserAdminAndStillInDB) {
             RedirectConfig.redirect("/api/v1/users", response);
         } else {
             RedirectConfig.redirect("/api/v1/auth/login", response);

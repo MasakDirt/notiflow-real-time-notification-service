@@ -27,32 +27,6 @@ public class UserService {
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
-    public User create(User user, String roleName) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        log.info("users password is encoded");
-        user.setRole(roleService.readByName(roleName));
-        setUsersProvider(user);
-        log.info("creation user - {} with provider - {}", user.getEmail(), user.getProvider());
-        userRepository.saveAndFlush(user);
-        log.info("User with email {} successfully created", user.getEmail());
-        return user;
-    }
-
-    private void setUsersProvider(User user) {
-        if (!isUserHasGoogleProvider(user)) {
-            user.setProvider(Provider.LOCAL);
-        }
-    }
-
-    private boolean isUserHasGoogleProvider(User user) {
-        return Objects.nonNull(user.getProvider()) &&
-                user.getProvider().equals(Provider.GOOGLE);
-    }
-
-    public boolean isUserExist(String email) {
-        return userRepository.findByEmail(email).isPresent();
-    }
-
     public User createNewUserFromOAuth2(CustomOAuth2User customOAuth2User) {
         User newUser = new User();
         newUser.setEmail(customOAuth2User.getName());
@@ -60,8 +34,48 @@ public class UserService {
         newUser.setPassword(customOAuth2User.getAttributes().get("sub").toString());
         newUser.setProvider(Provider.GOOGLE);
         newUser.setNotificationType(NotificationType.EMAIL);
+        newUser.setTelegram("@yourtelegram");
 
-        return create(newUser, "USER");
+        return saveWithSettingFields(newUser, "USER");
+    }
+
+    public User saveWithSettingFields(User user, String roleName) {
+        setImportantUsersFields(user, roleName);
+        userRepository.saveAndFlush(user);
+        log.info("User with email {} successfully created", user.getEmail());
+        return user;
+    }
+
+    private void setImportantUsersFields(User user, String roleName) {
+        setUsersPassword(user);
+        setUsersRole(user, roleName);
+        setUsersProvider(user);
+        log.info("creation user - {} with provider - {}", user.getEmail(), user.getProvider());
+    }
+
+    private void setUsersPassword(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        log.info("users password is encoded");
+    }
+
+    private void setUsersRole(User user, String roleName) {
+        user.setRole(roleService.readByName(roleName));
+        log.info("users role set to {}", roleName);
+    }
+
+    private void setUsersProvider(User user) {
+        if (!hasUserGoogleProvider(user)) {
+            user.setProvider(Provider.LOCAL);
+        }
+    }
+
+    private boolean hasUserGoogleProvider(User user) {
+        return Objects.nonNull(user.getProvider()) &&
+                user.getProvider().equals(Provider.GOOGLE);
+    }
+
+    public boolean isUserExist(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 
     public User readById(long id) {
@@ -98,7 +112,7 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    public void checkPasswords(String rawPass, String encodedPass) {
+    public void checkInvalidPasswords(String rawPass, String encodedPass) {
         if (!passwordEncoder.matches(rawPass, encodedPass)) {
             log.error("Passwords does not matches");
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong old password!");
@@ -106,15 +120,16 @@ public class UserService {
     }
 
     public User addDataToOAuth2User(long id, AddDataRequest addDataRequest) {
-        User userToUpdate = setDataToOAuth2(id, addDataRequest);
+        User userToUpdate = setNewFieldsToOAuth2(id, addDataRequest);
         return userRepository.saveAndFlush(userToUpdate);
     }
 
-    private User setDataToOAuth2(long id, AddDataRequest addDataRequest) {
+    private User setNewFieldsToOAuth2(long id, AddDataRequest addDataRequest) {
         User userToUpdate = readById(id);
         userToUpdate.setAge(addDataRequest.getAge());
         userToUpdate.setTelegram(addDataRequest.getTelegram());
-        userToUpdate.setNotificationType(NotificationType.getTypeFromName(addDataRequest.getNotificationType()));
+        userToUpdate.setNotificationType(
+                NotificationType.getTypeFromName(addDataRequest.getNotificationType()));
         return userToUpdate;
     }
 

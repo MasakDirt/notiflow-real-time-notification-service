@@ -25,6 +25,7 @@ public class User implements UserDetails {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
+    @NotNull(message = "Must be a valid e-mail address")
     @Pattern(regexp = "[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}", message = "Must be a valid e-mail address")
     @Column(name = "e-mail", nullable = false, unique = true)
     private String email;
@@ -33,10 +34,11 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Pattern(regexp = "^@.*", message = "The telegram account must started with '@' character")
+    @NotNull(message = "The telegram account must started with '@' character")
+    @Pattern(regexp = "^@.+", message = "The telegram account must started with '@' character")
     private String telegram;
 
-    @NotNull
+    @NotNull(message = "Select where we can send you notifications")
     @Enumerated(EnumType.STRING)
     @Column(name = "notification_type", nullable = false)
     private NotificationType notificationType;
