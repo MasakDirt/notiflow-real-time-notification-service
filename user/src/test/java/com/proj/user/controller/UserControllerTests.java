@@ -219,15 +219,13 @@ public class UserControllerTests {
     @Test
     @WithMockUser(username = "user@mail.co")
     public void testDeleteUser() throws Exception {
-        long id = getUserId();
-        performDeleteUser(id);
+        performDeleteUser(getUserId());
     }
 
     @Test
     @WithMockUser(username = "admin@mail.co")
     public void testDeleteAdminHimself() throws Exception {
-        long id = getAdminId();
-        performDeleteUser(id);
+        performDeleteUser(getAdminId());
     }
 
     private void performDeleteUser(long id) throws Exception {
