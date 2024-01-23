@@ -32,7 +32,7 @@ public class AuthController {
     @PostMapping("/login")
     public void login(@Valid LoginRequest loginRequest, HttpServletResponse response) {
         var user = userService.readByEmail(loginRequest.getEmail());
-        userService.checkPasswords(loginRequest.getPassword(), user.getPassword());
+        userService.checkInvalidPasswords(loginRequest.getPassword(), user.getPassword());
 
         log.info("=== POST-LOGIN === auth - {} === time - {}.", user.getEmail(), LocalDateTime.now());
         RedirectConfig.redirect("/api/v1/users", response);
@@ -47,7 +47,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public void register(@Valid RegisterRequest registerRequest, HttpServletResponse response) {
-        userService.create(userMapper.getUserFromRegisterRequest(registerRequest), "USER");
+        userService.saveWithSettingFields(userMapper.getUserFromRegisterRequest(registerRequest), "USER");
         log.info("Register user with email - {} == {}", registerRequest.getEmail(), LocalDateTime.now());
 
         RedirectConfig.redirect("/api/v1/auth/login", response);
