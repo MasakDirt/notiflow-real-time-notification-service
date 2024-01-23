@@ -14,7 +14,7 @@ public enum NotificationType {
 
     public static NotificationType getTypeFromName(String name) {
         for (NotificationType type : values()) {
-            if (type.name.equals(name)) {
+            if (type.name.equalsIgnoreCase(name)) {
                 return type;
             }
         }
