@@ -82,7 +82,7 @@ public class SecurityConfig {
                     .successHandler((request, response, authentication) -> {
                                 CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
                                 String email = customOAuth2User.getName();
-                                processOAuth2Authorization(customOAuth2User, email, response);
+                                chooseOAuth2AuthorizationLogicBasedOnIfItCreated(customOAuth2User, email, response);
                             }
                     )
             );
@@ -93,7 +93,10 @@ public class SecurityConfig {
         }
     }
 
-    private void processOAuth2Authorization(CustomOAuth2User customOAuth2User, String email, HttpServletResponse response) throws IOException {
+    private void chooseOAuth2AuthorizationLogicBasedOnIfItCreated(
+            CustomOAuth2User customOAuth2User, String email,
+            HttpServletResponse response) throws IOException {
+
         if (userService.isUserExist(email)) {
             loginOAuth2UserLogic(email, response);
         } else {
@@ -101,15 +104,15 @@ public class SecurityConfig {
         }
     }
 
-    private void createOAuth2UserLogic(CustomOAuth2User customOAuth2User, String email, HttpServletResponse response) throws IOException {
-        User  createdUser = userService.createNewUserFromOAuth2(customOAuth2User);
-        log.info("User register via google with email - {} == {}", email, LocalDateTime.now());
-        response.sendRedirect("/api/v1/users/" + createdUser.getId() + "/add-data");
-    }
-
-    private void loginOAuth2UserLogic(String email, HttpServletResponse response)  throws IOException {
+    private void loginOAuth2UserLogic(String email, HttpServletResponse response) throws IOException {
         log.info("User authorize via google with email - {} == {}", email, LocalDateTime.now());
         response.sendRedirect("/api/v1/users");
+    }
+
+    private void createOAuth2UserLogic(CustomOAuth2User customOAuth2User, String email, HttpServletResponse response) throws IOException {
+        User createdUser = userService.createNewUserFromOAuth2(customOAuth2User);
+        log.info("User register via google with email - {} == {}", email, LocalDateTime.now());
+        response.sendRedirect("/api/v1/users/" + createdUser.getId() + "/add-data");
     }
 
     private void logoutRequest(HttpSecurity httpSecurity) {
