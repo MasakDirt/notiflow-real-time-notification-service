@@ -19,6 +19,7 @@
         <module>eureka-server</module>
         <module>user</module>
         <module>logo</module>
+        <module>telegram-kafka</module>
     </modules>
 
     <properties>
@@ -68,12 +69,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
