@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: telegram_kafka
+    name: telegram
   kafka:
     bootstrap-servers: localhost:29092
 eureka:
