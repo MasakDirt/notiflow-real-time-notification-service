@@ -82,17 +82,13 @@ public class UserService {
     }
 
     public User readById(long id) {
-        User user = userRepository.findById(id)
+        return userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found!"));
-        log.info("Find user with id {}", id);
-        return user;
     }
 
     public User readByEmail(String email) {
-        User user = userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found!"));
-        log.info("Find user with email - {}", email);
-        return user;
     }
 
     public User update(User updated) {
@@ -148,9 +144,7 @@ public class UserService {
         String recipientUserTelegram = recipient.getTelegram();
         String senderUserName = sender.getFullName();
         log.info("{} want to receive a message from {}", recipientEmail, sender.getEmail());
-        String message = String.format("Hello %s, I like that you want to speak with me, that`s crazy)))", recipient.getFullName());
         restTemplate.postForLocation("http://TELEGRAM/api/v1/telegram/send",
-                new NotificationData(recipientUserTelegram, senderUserName, message));
-
+                NotificationData.forTelegram(recipientUserTelegram, senderUserName));
     }
 }
