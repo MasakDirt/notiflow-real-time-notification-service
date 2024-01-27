@@ -116,4 +116,12 @@ public class UserController {
             RedirectConfig.redirect("/api/v1/auth/login", response);
         }
     }
+
+    @PostMapping("/get-notification/{sender-id}")
+    public void getNotificationFromUser(@PathVariable("sender-id") long senderId, Authentication authentication) {
+        String recipientEmail = authentication.getName();
+        log.info("Preparing to receive data to user {}", recipientEmail);
+        userService.sendDataToTelegramNotification(recipientEmail, senderId);
+        log.info("Data successfully transfer!");
+    }
 }
