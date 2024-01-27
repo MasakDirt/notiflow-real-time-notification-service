@@ -1,4 +1,4 @@
-package com.proj.telegramkafka;
+package com.proj.telegramkafka.controller;
 
 import com.proj.telegramkafka.model.NotificationData;
 import jakarta.validation.Valid;
