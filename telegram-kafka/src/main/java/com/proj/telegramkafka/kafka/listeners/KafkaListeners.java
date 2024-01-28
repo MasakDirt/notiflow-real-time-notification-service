@@ -1,4 +1,4 @@
-package com.proj.telegramkafka;
+package com.proj.telegramkafka.kafka.listeners;
 
 import com.proj.telegramkafka.model.NotificationData;
 import lombok.extern.slf4j.Slf4j;

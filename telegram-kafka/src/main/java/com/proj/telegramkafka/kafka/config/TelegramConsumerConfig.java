@@ -1,4 +1,4 @@
-package com.proj.telegramkafka.config;
+package com.proj.telegramkafka.kafka.config;
 
 import com.proj.telegramkafka.model.NotificationData;
 import org.apache.kafka.common.serialization.StringDeserializer;

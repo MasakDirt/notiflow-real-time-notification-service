@@ -1,4 +1,4 @@
-package com.proj.telegramkafka.config;
+package com.proj.telegramkafka.kafka.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.context.annotation.Bean;
