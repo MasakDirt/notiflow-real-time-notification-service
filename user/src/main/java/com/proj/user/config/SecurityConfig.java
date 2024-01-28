@@ -5,7 +5,7 @@ import com.proj.user.model.CustomOAuth2User;
 import com.proj.user.model.User;
 import com.proj.user.service.CustomOAuth2UserService;
 import com.proj.user.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +43,7 @@ public class SecurityConfig {
     private void authorizeRequest(HttpSecurity httpSecurity) {
         try {
             httpSecurity.authorizeHttpRequests(request ->
-                    request.requestMatchers("/api/v1/auth/**", "/oauth2/**").permitAll()
+                    request.antMatchers("/api/v1/auth/**", "/oauth2/**").permitAll()
                             .anyRequest().authenticated()
             );
         } catch (Exception exception) {

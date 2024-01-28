@@ -3,7 +3,7 @@ package com.proj.user.service;
 import com.proj.user.dto.AddDataRequest;
 import com.proj.user.model.*;
 import com.proj.user.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

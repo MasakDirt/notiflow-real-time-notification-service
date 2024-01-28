@@ -3,10 +3,11 @@ package com.proj.user.service;
 import com.proj.user.exception.RoleNameException;
 import com.proj.user.model.Role;
 import com.proj.user.repository.RoleRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityNotFoundException;
 
 @Slf4j
 @Service

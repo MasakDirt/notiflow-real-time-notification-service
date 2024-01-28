@@ -1,7 +1,7 @@
 package com.proj.user;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.Set;

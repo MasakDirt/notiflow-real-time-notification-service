@@ -1,10 +1,8 @@
 package com.proj.telegramkafka.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import javax.validation.constraints.*;
 
 @Builder
 @Getter

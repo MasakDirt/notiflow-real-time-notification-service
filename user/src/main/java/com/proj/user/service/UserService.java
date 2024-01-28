@@ -7,7 +7,6 @@ import com.proj.user.model.NotificationType;
 import com.proj.user.model.Provider;
 import com.proj.user.model.User;
 import com.proj.user.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -17,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
+import javax.persistence.EntityNotFoundException;
 
 import java.util.Objects;
 

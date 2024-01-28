@@ -1,7 +1,7 @@
 package com.proj.user.config;
 
 import com.proj.user.exception.RedirectException;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

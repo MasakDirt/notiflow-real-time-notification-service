@@ -1,11 +1,11 @@
 package com.proj.telegramkafka.controller;
 
 import com.proj.telegramkafka.model.NotificationData;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
