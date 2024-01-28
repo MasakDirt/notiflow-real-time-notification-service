@@ -11,6 +11,7 @@ import javax.validation.constraints.NotEmpty;
 @EqualsAndHashCode
 @ToString
 @Table(name = "telegram_users")
+@NoArgsConstructor
 public class TelegramUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +23,9 @@ public class TelegramUser {
     @NotEmpty(message = "The chatId cannot be empty")
     @Column(name = "chat_id", nullable = false)
     private String chatId;
+
+    public TelegramUser(String username, String chatId) {
+        this.username = username;
+        this.chatId = chatId;
+    }
 }
