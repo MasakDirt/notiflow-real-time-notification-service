@@ -15,9 +15,9 @@ public class TelegramUserService {
 
     private final TelegramUserRepository telegramUserRepository;
 
-    public TelegramUser create(String username, String chatId) {
+    public TelegramUser create(String username, long chatId) {
         TelegramUser telegramUser = new TelegramUser(username, chatId);
-        telegramUserRepository.saveAndFlush(telegramUser);
+        telegramUser = telegramUserRepository.save(telegramUser);
         log.info("Saved user - {}, with {} - chat id.", username, chatId);
         return telegramUser;
     }

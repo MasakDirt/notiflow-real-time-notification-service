@@ -17,7 +17,7 @@ public class TelegramUserController {
     private final TelegramUserService telegramUserService;
 
     @PostMapping("/create")
-    public void createTelegramUser(String username, String chatId) {
+    public void createTelegramUser(String username, long chatId) {
         telegramUserService.create(username, chatId);
         log.info("POST-TELEGRAM_USER === {} == {}", username, LocalDateTime.now());
     }
