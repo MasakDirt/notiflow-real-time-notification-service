@@ -27,6 +27,12 @@ public class KafkaListeners {
     void listener(String jsonData) {
         NotificationData notificationData = NotificationData.fromJsonString(jsonData);
         log.info("Listener received: {}", notificationData);
-        notiflowBot.sendMsg(telegramUserService.readByUsername(notificationData.getRecipientUserTelegram()).getChatId(), notificationData.getMessage());
+
+        sendNotificationToUser(notificationData.getTelegramUsername(), notificationData.getMessage());
+    }
+
+    private void sendNotificationToUser(String telegramUsername, String message) {
+        long chatId = telegramUserService.getUsersChatId(telegramUsername);
+        notiflowBot.sendMsg(chatId, message);
     }
 }
