@@ -20,11 +20,10 @@ public class TelegramUser {
     @NotEmpty(message = "The username cannot be empty")
     private String username;
 
-    @NotEmpty(message = "The chatId cannot be empty")
-    @Column(name = "chat_id", nullable = false)
-    private String chatId;
+    @Column(name = "chat_id")
+    private long chatId;
 
-    public TelegramUser(String username, String chatId) {
+    public TelegramUser(String username, long chatId) {
         this.username = username;
         this.chatId = chatId;
     }
