@@ -73,7 +73,7 @@ public class UserController {
                        HttpServletResponse response, Authentication authentication) {
         userService.update(userMapper.getUserFromUpdateRequest(updateRequest));
         log.info("UPDATE-USER === {}, time = {}", authentication.getPrincipal(), LocalDateTime.now());
-        RedirectConfig.redirect("/api/v1/users", response);
+        chooseRedirectAfterUpdating(id, response);
     }
 
     @GetMapping("/{id}/add-data")
@@ -90,10 +90,10 @@ public class UserController {
                                       Authentication authentication, HttpServletResponse response) {
         userService.addDataToOAuth2User(id, addDataRequest);
         log.info("ADD-OAUTH2-DATA === {}, time = {}", authentication.getPrincipal(), LocalDateTime.now());
-        chooseRedirectAfterAddingData(id, response);
+        chooseRedirectAfterUpdating(id, response);
     }
 
-    private void chooseRedirectAfterAddingData(long id, HttpServletResponse response) {
+    private void chooseRedirectAfterUpdating(long id, HttpServletResponse response) {
         if (userService.isUsersNotificationTypeTelegram(id)) {
             RedirectConfig.redirect("/api/v1/telegram/bot-url", response);
         } else {
