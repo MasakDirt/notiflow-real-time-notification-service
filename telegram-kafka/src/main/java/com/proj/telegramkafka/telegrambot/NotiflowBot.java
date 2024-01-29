@@ -1,6 +1,7 @@
 package com.proj.telegramkafka.telegrambot;
 
 import com.proj.telegramkafka.service.TelegramUserService;
+import com.proj.telegramkafka.telegrambot.exception.NotiflowBotException;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -31,17 +32,18 @@ public class NotiflowBot extends TelegramLongPollingBot {
 
     private void handleUpdate(Update update) {
         long chatId = update.getMessage().getChatId();
-        String username = update.getMessage().getChat().getUserName();
-        telegramUserService.create(username, chatId);
-        String command = update.getMessage().getText();
-        getCommands(chatId, command);
+        saveUserIfNotExist(update, chatId);
+        sendCommand(chatId);
     }
 
-    public synchronized void getCommands(long chatId, String command) {
-        if (command.equals("/start")) {
-            sendMsg(chatId, "Thanks for using our notification Service❤️" +
-                    "\uD83C\uDDFA\uD83C\uDDE6\uD83C\uDDFA\uD83C\uDDE6\uD83C\uDDFA\uD83C\uDDE6");
-        }
+    private void saveUserIfNotExist(Update update, long chatId) {
+        String username = "@" + update.getMessage().getChat().getUserName();
+        telegramUserService.createIfNotExist(username, chatId);
+    }
+
+    private synchronized void sendCommand(long chatId) {
+        sendMsg(chatId, "Thanks for using our notification Service❤️" +
+                "\uD83C\uDDFA\uD83C\uDDE6\uD83C\uDDFA\uD83C\uDDE6\uD83C\uDDFA\uD83C\uDDE6");
     }
 
     public synchronized void sendMsg(long chatId, String text) {
@@ -62,8 +64,8 @@ public class NotiflowBot extends TelegramLongPollingBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
-            System.out.println("Message disappear! " + Level.SEVERE + "  " + e);
-            log.error("{}, Exception: {}", Level.SEVERE, e.toString());
+            log.error("{}, Exception while executing message: {}", Level.SEVERE, e.toString());
+            throw new NotiflowBotException("Sorry, it`s our mistake, please contact to our customer support.");
         }
     }
 
