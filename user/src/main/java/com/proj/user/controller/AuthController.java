@@ -5,8 +5,10 @@ import com.proj.user.mapper.UserMapper;
 import com.proj.user.dto.LoginRequest;
 import com.proj.user.dto.RegisterRequest;
 import com.proj.user.service.UserService;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ui.ModelMap;
@@ -47,9 +49,16 @@ public class AuthController {
 
     @PostMapping("/register")
     public void register(@Valid RegisterRequest registerRequest, HttpServletResponse response) {
-        userService.saveWithSettingFields(userMapper.getUserFromRegisterRequest(registerRequest), "USER");
+        var user = userService.saveWithSettingFields(userMapper.getUserFromRegisterRequest(registerRequest), "USER");
         log.info("Register user with email - {} == {}", registerRequest.getEmail(), LocalDateTime.now());
+        chooseRedirectAfterRegister(user.getId(), response);
+    }
 
-        RedirectConfig.redirect("/api/v1/auth/login", response);
+    private void chooseRedirectAfterRegister(long id, HttpServletResponse response) {
+        if (userService.isUsersNotificationTypeTelegram(id)) {
+            RedirectConfig.redirect("/api/v1/telegram/bot-url", response);
+        } else {
+            RedirectConfig.redirect("/api/v1/auth/login", response);
+        }
     }
 }
