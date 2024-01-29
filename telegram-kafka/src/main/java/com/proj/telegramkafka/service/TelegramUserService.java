@@ -15,15 +15,27 @@ public class TelegramUserService {
 
     private final TelegramUserRepository telegramUserRepository;
 
-    public TelegramUser create(String username, long chatId) {
-        TelegramUser telegramUser = new TelegramUser(username, chatId);
-        telegramUser = telegramUserRepository.save(telegramUser);
+    public void createIfNotExist(String username, long chatId) {
+        if (isNotExist(username)) {
+            createOne(username, chatId);
+        }
+    }
+
+    private boolean isNotExist(String username) {
+        return telegramUserRepository.findByUsername(username).isEmpty();
+    }
+
+    private void createOne(String username, long chatId) {
+        telegramUserRepository.save(new TelegramUser(username, chatId));
         log.info("Saved user - {}, with {} - chat id.", username, chatId);
-        return telegramUser;
     }
 
     public TelegramUser readByUsername(String username) {
         return telegramUserRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Telegram user not found"));
+    }
+
+    public long getUsersChatId(String username) {
+        return readByUsername(username).getChatId();
     }
 }
