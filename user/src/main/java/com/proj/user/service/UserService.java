@@ -147,4 +147,8 @@ public class UserService {
         restTemplate.postForLocation("http://TELEGRAM/api/v1/telegram/send",
                 NotificationData.forTelegram(recipientUserTelegram, senderUserName));
     }
+
+    public boolean isUsersNotificationTypeTelegram(long id) {
+        return readById(id).getNotificationType().equals(NotificationType.TELEGRAM);
+    }
 }
