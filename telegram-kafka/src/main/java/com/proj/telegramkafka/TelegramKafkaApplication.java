@@ -2,7 +2,7 @@ package com.proj.telegramkafka;
 
 import com.proj.telegramkafka.service.TelegramUserService;
 import com.proj.telegramkafka.telegrambot.NotiflowBot;
-import com.proj.telegramkafka.telegrambot.exception.NotiflowBotRunException;
+import com.proj.telegramkafka.telegrambot.exception.NotiflowBotException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -38,7 +38,7 @@ public class TelegramKafkaApplication {
             log.info("NotiflowBot started successfully!");
         } catch (Exception exception) {
             log.info("Exception was throwing while bot runs.");
-            throw new NotiflowBotRunException("Something go wrong while bot runs.");
+            throw new NotiflowBotException("Something go wrong while bot runs.");
         }
     }
 }
