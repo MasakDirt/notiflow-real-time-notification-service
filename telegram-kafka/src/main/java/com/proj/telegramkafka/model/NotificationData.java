@@ -9,14 +9,11 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString
 public class NotificationData {
 
     @NotNull(message = "The telegram account must started with '@' character")
     @Pattern(regexp = "^@.+", message = "The telegram account must started with '@' character")
-    private String recipientUserTelegram;
-
-    private String senderUserName;
+    private String telegramUsername;
 
     @NotEmpty(message = "Message must not be empty!")
     private String message;
@@ -27,5 +24,13 @@ public class NotificationData {
         } catch (Exception e) {
             throw new RuntimeException("JsonData isn`t appropriate to notification data");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "NotificationData{" +
+                "recipientUserTelegram='" + telegramUsername + '\'' +
+                ", message='" + message.substring(0, 33) + '\'' +
+                '}';
     }
 }
