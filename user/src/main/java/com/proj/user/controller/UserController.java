@@ -90,7 +90,15 @@ public class UserController {
                                       Authentication authentication, HttpServletResponse response) {
         userService.addDataToOAuth2User(id, addDataRequest);
         log.info("ADD-OAUTH2-DATA === {}, time = {}", authentication.getPrincipal(), LocalDateTime.now());
-        RedirectConfig.redirect("/api/v1/users", response);
+        chooseRedirectAfterAddingData(id, response);
+    }
+
+    private void chooseRedirectAfterAddingData(long id, HttpServletResponse response) {
+        if (userService.isUsersNotificationTypeTelegram(id)) {
+            RedirectConfig.redirect("/api/v1/telegram/bot-url", response);
+        } else {
+            RedirectConfig.redirect("/api/v1/users", response);
+        }
     }
 
     @GetMapping("/{id}/delete")
