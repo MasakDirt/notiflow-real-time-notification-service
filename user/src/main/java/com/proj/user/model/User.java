@@ -27,7 +27,7 @@ public class User implements UserDetails {
 
     @NotNull(message = "Must be a valid e-mail address")
     @Pattern(regexp = "[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}", message = "Must be a valid e-mail address")
-    @Column(name = "e-mail", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @NotBlank(message = "The password cannot be 'blank'")
