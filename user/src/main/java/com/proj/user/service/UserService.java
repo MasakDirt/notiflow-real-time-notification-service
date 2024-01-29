@@ -140,12 +140,9 @@ public class UserService {
     public void sendDataToTelegramNotification(String recipientEmail, long senderId) {
         User recipient = readByEmail(recipientEmail);
         User sender = readById(senderId);
-
-        String recipientUserTelegram = recipient.getTelegram();
-        String senderUserName = sender.getFullName();
         log.info("{} want to receive a message from {}", recipientEmail, sender.getEmail());
         restTemplate.postForLocation("http://TELEGRAM/api/v1/telegram/send",
-                NotificationData.forTelegram(recipientUserTelegram, senderUserName));
+                NotificationData.forTelegram(recipient, sender));
     }
 
     public boolean isUsersNotificationTypeTelegram(long id) {
