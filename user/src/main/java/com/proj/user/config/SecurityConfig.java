@@ -43,7 +43,8 @@ public class SecurityConfig {
     private void authorizeRequest(HttpSecurity httpSecurity) {
         try {
             httpSecurity.authorizeHttpRequests(request ->
-                    request.antMatchers("/api/v1/auth/**", "/oauth2/**").permitAll()
+                    request.antMatchers("/api/v1/auth/**", "/oauth2/**",
+                                    "/api/v1/telegram/**").permitAll()
                             .anyRequest().authenticated()
             );
         } catch (Exception exception) {
