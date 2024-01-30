@@ -17,7 +17,7 @@ public class TelegramUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @NotEmpty(message = "The username cannot be empty")
+    @NotEmpty(message = "The username cannot be empty!")
     private String username;
 
     @Column(name = "chat_id")
