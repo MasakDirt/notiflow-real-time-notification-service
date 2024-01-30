@@ -185,7 +185,7 @@
                                 <h5 th:text="'E-mail: ' + ${user.email}"></h5>
                             </div>
                             <div class="form-group" th:unless="${isAdmin || email == user.email}">
-                                <form th:action="@{|/api/v1/users/get-notification/${user.id}|}" method="post">
+                                <form th:action="@{|/api/v1/get-notification/${user.id}|}" method="post">
                                     <button type="submit" class="btn btn-yellow">Get Notification</button>
                                 </form>
                             </div>
@@ -208,7 +208,7 @@
                                 <h5 th:text="'Age: ' + ${user.age}"></h5>
                             </div>
                             <div class="form-group" th:if="${isAdmin}">
-                                <form th:action="@{|/api/v1/users/get-notification/${user.id}|}" method="post">
+                                <form th:action="@{|/api/v1/get-notification/${user.id}|}" method="post">
                                     <button type="submit" class="btn btn-yellow">Get Notification</button>
                                 </form>
                             </div>
