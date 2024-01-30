@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class UserExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ModelAndView handleResponseStatusException(HttpServletRequest request, ResponseStatusException ex) {
