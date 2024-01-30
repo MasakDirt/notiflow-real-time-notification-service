@@ -2,7 +2,7 @@ package com.proj.telegramkafka;
 
 import com.proj.telegramkafka.service.TelegramUserService;
 import com.proj.telegramkafka.telegrambot.NotiflowBot;
-import com.proj.telegramkafka.telegrambot.exception.NotiflowBotException;
+import com.proj.telegramkafka.exception.NotiflowBotException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
