@@ -1,7 +1,7 @@
 package com.proj.user.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import javax.persistence.*;
+import javax.validation.constraints.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,7 +27,7 @@ public class User implements UserDetails {
 
     @NotNull(message = "Must be a valid e-mail address")
     @Pattern(regexp = "[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}", message = "Must be a valid e-mail address")
-    @Column(name = "e-mail", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @NotBlank(message = "The password cannot be 'blank'")

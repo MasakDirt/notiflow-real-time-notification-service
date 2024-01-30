@@ -1,7 +1,7 @@
 package com.proj.user.config;
 
 import com.proj.user.exception.RedirectException;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

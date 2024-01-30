@@ -1,12 +1,12 @@
 package com.proj.user.service;
 
 import com.proj.user.dto.AddDataRequest;
+import com.proj.user.dto.NotificationData;
 import com.proj.user.model.CustomOAuth2User;
 import com.proj.user.model.NotificationType;
 import com.proj.user.model.Provider;
 import com.proj.user.model.User;
 import com.proj.user.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -14,7 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
+import javax.persistence.EntityNotFoundException;
 
 import java.util.Objects;
 
@@ -26,6 +28,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
+    private final RestTemplate restTemplate;
 
     public User createNewUserFromOAuth2(CustomOAuth2User customOAuth2User) {
         User newUser = new User();
@@ -79,17 +82,13 @@ public class UserService {
     }
 
     public User readById(long id) {
-        User user = userRepository.findById(id)
+        return userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("User not found!"));
-        log.info("Find user with id {}", id);
-        return user;
     }
 
     public User readByEmail(String email) {
-        User user = userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("User not found!"));
-        log.info("Find user with email - {}", email);
-        return user;
     }
 
     public User update(User updated) {
@@ -136,5 +135,17 @@ public class UserService {
     public void delete(User user) {
         userRepository.delete(user);
         log.info("user with email {} successfully deleted", user.getEmail());
+    }
+
+    public void sendDataToTelegramNotification(String recipientEmail, long senderId) {
+        User recipient = readByEmail(recipientEmail);
+        User sender = readById(senderId);
+        log.info("{} want to receive a message from {}", recipientEmail, sender.getEmail());
+        restTemplate.postForLocation("http://TELEGRAM/api/v1/telegram/send",
+                NotificationData.forTelegram(recipient, sender));
+    }
+
+    public boolean isUsersNotificationTypeTelegram(long id) {
+        return readById(id).getNotificationType().equals(NotificationType.TELEGRAM);
     }
 }

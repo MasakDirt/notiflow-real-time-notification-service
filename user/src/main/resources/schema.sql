@@ -4,7 +4,7 @@ drop table if exists roles cascade;
 drop table if exists users cascade;
 
 create table roles (id bigserial not null, name varchar(255) not null unique, primary key (id));
-create table users (id bigserial not null, role_id bigint, "e-mail" varchar(255) not null unique,
+create table users (id bigserial not null, role_id bigint, "email" varchar(255) not null unique,
                     full_name varchar(255) not null,notification_type varchar(255)
                         not null check (notification_type in ('TELEGRAM','EMAIL')),
                     password varchar(255) not null, provider varchar(255)

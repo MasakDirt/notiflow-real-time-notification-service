@@ -7,8 +7,8 @@ import com.proj.user.mapper.UserMapper;
 import com.proj.user.model.User;
 import com.proj.user.service.AuthUserService;
 import com.proj.user.service.UserService;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -73,7 +73,7 @@ public class UserController {
                        HttpServletResponse response, Authentication authentication) {
         userService.update(userMapper.getUserFromUpdateRequest(updateRequest));
         log.info("UPDATE-USER === {}, time = {}", authentication.getPrincipal(), LocalDateTime.now());
-        RedirectConfig.redirect("/api/v1/users", response);
+        chooseRedirectAfterUpdating(id, response);
     }
 
     @GetMapping("/{id}/add-data")
@@ -90,7 +90,15 @@ public class UserController {
                                       Authentication authentication, HttpServletResponse response) {
         userService.addDataToOAuth2User(id, addDataRequest);
         log.info("ADD-OAUTH2-DATA === {}, time = {}", authentication.getPrincipal(), LocalDateTime.now());
-        RedirectConfig.redirect("/api/v1/users", response);
+        chooseRedirectAfterUpdating(id, response);
+    }
+
+    private void chooseRedirectAfterUpdating(long id, HttpServletResponse response) {
+        if (userService.isUsersNotificationTypeTelegram(id)) {
+            RedirectConfig.redirect("/api/v1/telegram/bot-url", response);
+        } else {
+            RedirectConfig.redirect("/api/v1/users", response);
+        }
     }
 
     @GetMapping("/{id}/delete")

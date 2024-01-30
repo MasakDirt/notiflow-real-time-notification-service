@@ -1,6 +1,6 @@
 package com.proj.user.model;
 
-import jakarta.validation.ConstraintViolation;
+import javax.validation.ConstraintViolation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

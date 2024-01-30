@@ -3,7 +3,7 @@ package com.proj.user.service;
 import com.proj.user.exception.RoleNameException;
 import com.proj.user.model.Role;
 import com.proj.user.repository.RoleRepository;
-import jakarta.persistence.EntityNotFoundException;
+import javax.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

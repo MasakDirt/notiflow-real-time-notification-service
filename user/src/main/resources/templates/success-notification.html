@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>Notification Success</title>
+    <link rel="icon" th:href="@{http://localhost:8090/api/v1/logo}" type="image/png">
+    <link rel="shortcut icon" th:href="@{http://localhost:8090/api/v1/logo}" type="image/png">
+
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #333;
+            font-family: Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #header-id {
+            background-color: #6a9cec;
+            width: 100%;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .btn-yellow {
+            background-color: #e0b566;
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            padding: 13px 22px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+
+        .btn-yellow:hover {
+            background-color: #d38666;
+        }
+
+        .success-message {
+            background-color: #3b916d;
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #4CAF50;
+            font-size: 24px;
+        }
+
+        .centered {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<header id="header-id">
+    <div th:replace="~{header.html}"></div>
+</header>
+<div class="success-message">
+    <div class="checkmark">&#10004;</div>
+    <div class="centered">
+        <h2 th:text="${'Notification successfully send to your ' + notificationType + '!'}"></h2>
+        <h3 th:text="${userName + ', thank you for using our notification service❤️!'}"></h3>
+        <br>
+        <a class="btn btn-yellow"
+           th:href="@{/api/v1/users}">Continue</a>
+    </div>
+</div>
+</body>
+</html>
