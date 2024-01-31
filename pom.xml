@@ -20,6 +20,7 @@
         <module>user</module>
         <module>logo</module>
         <module>telegram-kafka</module>
+        <module>email-kafka</module>
     </modules>
 
     <properties>
