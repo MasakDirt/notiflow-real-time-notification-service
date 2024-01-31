@@ -6,6 +6,7 @@ import javax.validation.constraints.*;
 
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
