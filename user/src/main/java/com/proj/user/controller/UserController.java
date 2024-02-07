@@ -6,6 +6,7 @@ import com.proj.user.dto.UpdateRequest;
 import com.proj.user.mapper.UserMapper;
 import com.proj.user.model.User;
 import com.proj.user.service.AuthUserService;
+import com.proj.user.service.NotificationService;
 import com.proj.user.service.UserService;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -31,6 +32,7 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
     private final AuthUserService authUserService;
+    private final NotificationService notificationService;
 
     @GetMapping
     public ModelAndView getUsers(
@@ -94,7 +96,7 @@ public class UserController {
     }
 
     private void chooseRedirectAfterUpdating(long id, HttpServletResponse response) {
-        if (userService.isUsersNotificationTypeTelegram(id)) {
+        if (notificationService.isUsersNotificationTypeTelegram(id)) {
             RedirectConfig.redirect("/api/v1/telegram/bot-url", response);
         } else {
             RedirectConfig.redirect("/api/v1/users", response);
