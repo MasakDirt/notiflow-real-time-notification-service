@@ -28,7 +28,7 @@ public class KafkaListeners {
         NotificationData notificationData = NotificationData.fromJsonString(jsonData);
         log.info("Listener received: {}", notificationData);
 
-        sendNotificationToUser(notificationData.getRecipientUserTelegram(), notificationData.getMessage());
+        sendNotificationToUser(notificationData.getUsername(), notificationData.getMessage());
     }
 
     private void sendNotificationToUser(String telegramUsername, String message) {
