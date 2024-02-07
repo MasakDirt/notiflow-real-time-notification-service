@@ -4,6 +4,7 @@ import com.proj.user.config.RedirectConfig;
 import com.proj.user.mapper.UserMapper;
 import com.proj.user.dto.LoginRequest;
 import com.proj.user.dto.RegisterRequest;
+import com.proj.user.service.NotificationService;
 import com.proj.user.service.UserService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 public class AuthController {
     private final UserService userService;
     private final UserMapper userMapper;
+    private final NotificationService notificationService;
 
     @GetMapping("/login")
     public ModelAndView getLoginForm(ModelMap modelMap) {
@@ -55,7 +57,7 @@ public class AuthController {
     }
 
     private void chooseRedirectAfterRegister(long id, HttpServletResponse response) {
-        if (userService.isUsersNotificationTypeTelegram(id)) {
+        if (notificationService.isUsersNotificationTypeTelegram(id)) {
             RedirectConfig.redirect("/api/v1/telegram/bot-url", response);
         } else {
             RedirectConfig.redirect("/api/v1/auth/login", response);
