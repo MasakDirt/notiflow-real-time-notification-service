@@ -1,43 +1,53 @@
 package com.proj.user.dto;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-
+import com.proj.user.model.NotificationType;
 import com.proj.user.model.User;
 import lombok.*;
 
+import javax.validation.constraints.NotEmpty;
+
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@ToString
 public class NotificationData {
 
-    @NotNull(message = "The telegram account must started with '@' character")
-    @Pattern(regexp = "^@.+", message = "The telegram account must started with '@' character")
-    private String recipientUserTelegram;
+    @NotEmpty(message = "The username must not be empty!")
+    private String username;
 
     @NotEmpty(message = "Message must not be empty!")
     private String message;
 
-    private NotificationData(String recipientUserTelegram) {
-        this.recipientUserTelegram = recipientUserTelegram;
+    private NotificationData(String username) {
+        this.username = username;
     }
 
-    public static NotificationData forTelegram(User recipient, User sender) {
-        NotificationData notificationData = new NotificationData(recipient.getTelegram());
-        notificationData.message = String.format("""
-                Hello "%s"(%s)👋,
-                              
-                You have successfully subscribed to receive notifications from "%s"(%s).\s
-                You will now receive updates and notifications whenever %s posts or shares new content.
-                              
-                Thank you for using our notification service❤️!
-                              
-                Notiflow🤖""", recipient.getFullName(), recipient.getTelegram(),
-                sender.getFullName(), sender.getTelegram(), sender.getTelegram());
+    public static NotificationData of(User recipient, User forWhomSubscribe) {
+        NotificationData notificationData = chooseNotificationType(recipient);
+        notificationData.setMessage(recipient, forWhomSubscribe);
         return notificationData;
+    }
+
+    private static NotificationData chooseNotificationType(User recipient) {
+        if (recipient.getNotificationType().equals(NotificationType.EMAIL)) {
+            return new NotificationData(recipient.getEmail());
+        } else {
+            return new NotificationData(recipient.getTelegram());
+        }
+    }
+
+    private void setMessage(User recipient, User forWhomSubscribe) {
+        String forWhomSubscribeUserName = forWhomSubscribe.getFullName();
+        this.message = String.format("""
+                        Hello "%s"👋,
+                                      
+                        You have successfully subscribed to receive notifications from "%s".\s
+                        You will now receive updates and notifications whenever %s posts or shares new content.
+                                      
+                        Thank you for using our notification service❤️!
+                                      
+                        Notiflow🤖""", recipient.getFullName(), forWhomSubscribeUserName, forWhomSubscribeUserName);
     }
 }
