@@ -14,7 +14,7 @@ public class NotificationData {
 
     @NotNull(message = "The telegram account must started with '@' character")
     @Pattern(regexp = "^@.+", message = "The telegram account must started with '@' character")
-    private String recipientUserTelegram;
+    private String username;
 
     @NotEmpty(message = "Message must not be empty!")
     private String message;
@@ -30,7 +30,7 @@ public class NotificationData {
     @Override
     public String toString() {
         return "NotificationData{" +
-                "recipientUserTelegram='" + recipientUserTelegram + '\'' +
+                "username='" + username + '\'' +
                 ", message='" + message.substring(0, 33) + '\'' +
                 '}';
     }
