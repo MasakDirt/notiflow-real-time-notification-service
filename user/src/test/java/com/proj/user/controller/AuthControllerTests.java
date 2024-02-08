@@ -95,7 +95,7 @@ public class AuthControllerTests {
                         .param("notificationType", "Telegram")
                 )
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/api/v1/auth/login"));
+                .andExpect(redirectedUrl("/api/v1/telegram/bot-url"));
 
         int usersSizeAfterRegister = userRepository.findAll().size();
         Assertions.assertTrue(usersSizeBeforeRegister < usersSizeAfterRegister);
