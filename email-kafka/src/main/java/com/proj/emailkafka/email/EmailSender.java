@@ -16,7 +16,6 @@ import com.proj.emailkafka.model.NotificationData;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
@@ -35,16 +34,14 @@ public class EmailSender {
 
     private static final String SENDER_EMAIL_ADDRESS = "maksimkarulet8@gmail.com";
 
-    private final RestTemplate restTemplate;
-
     public void sendEmail(NotificationData notificationData) throws Exception {
-        Gmail service = setGmailService();
-        MimeMessage email = setMimeMessageEmail(notificationData);
-        Message message = setNewEncodedMessage(email);
+        Gmail service = getGmailService();
+        MimeMessage email = getMimeMessageEmail(notificationData);
+        Message message = getNewEncodedMessage(email);
         tryToSendMessageToUser(message, service);
     }
 
-    private Gmail setGmailService() throws Exception {
+    private Gmail getGmailService() throws Exception {
         NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
         GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
         return new Gmail.Builder(httpTransport, jsonFactory, this.getCredentials(httpTransport, jsonFactory))
@@ -69,9 +66,8 @@ public class EmailSender {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    private MimeMessage setMimeMessageEmail(NotificationData notificationData) throws Exception {
-        Properties properties = new Properties();
-        Session session = Session.getDefaultInstance(properties, null);
+    private MimeMessage getMimeMessageEmail(NotificationData notificationData) throws Exception {
+        Session session = getSession();
         MimeMessage email = new MimeMessage(session);
         email.setFrom(new InternetAddress(SENDER_EMAIL_ADDRESS));
         email.addRecipients(TO, notificationData.getUsername());
@@ -81,7 +77,11 @@ public class EmailSender {
         return email;
     }
 
-    private Message setNewEncodedMessage(MimeMessage email) throws Exception {
+    private Session getSession() {
+        return Session.getDefaultInstance(new Properties(), null);
+    }
+
+    private Message getNewEncodedMessage(MimeMessage email) throws Exception {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         email.writeTo(buffer);
         byte[] rawMessageBytes = buffer.toByteArray();
@@ -92,12 +92,10 @@ public class EmailSender {
     private void tryToSendMessageToUser(Message message, Gmail service) throws Exception {
         try {
             message = service.users().messages().send("me", message).execute();
-            restTemplate.postForLocation("http://USER/api/v1/get-notification/if-success", true);
             log.info("Message id {}", message.getId());
             log.info("{}", message.toPrettyString());
         } catch (GoogleJsonResponseException googleJsonResponseException) {
             log.error("Error sending message to email!", googleJsonResponseException);
-            restTemplate.postForLocation("http://USER/api/v1/get-notification/if-success", false);
         }
     }
 }
