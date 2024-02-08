@@ -1,6 +1,7 @@
 package com.proj.user.controller;
 
 import com.proj.user.config.RedirectConfig;
+import com.proj.user.service.NotificationService;
 import com.proj.user.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +19,14 @@ import javax.servlet.http.HttpServletResponse;
 public class NotificationController {
 
     private final UserService userService;
+    private final NotificationService notificationService;
 
     @PostMapping("/{sender-id}")
-    public void getNotificationFromUser(@PathVariable("sender-id") long senderId,
-                                        Authentication authentication, HttpServletResponse response) {
+    public void getNotificationFromUser(@PathVariable("sender-id") long senderId, Authentication authentication,
+                                        HttpServletResponse response) {
         String recipientEmail = authentication.getName();
         log.info("Preparing to receive data to user {}", recipientEmail);
-        userService.sendDataToTelegramNotification(recipientEmail, senderId);
+        notificationService.sendDataForNotification(recipientEmail, senderId);
         log.info("Data successfully transfer!");
         RedirectConfig.redirect("/api/v1/get-notification/success", response);
     }
@@ -37,6 +39,6 @@ public class NotificationController {
 
         modelMap.addAttribute("notificationType", authNotificationType.getName());
         modelMap.addAttribute("userName", authUserName);
-        return new ModelAndView("success-notification");
+        return new ModelAndView("success-notification", modelMap);
     }
 }

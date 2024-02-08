@@ -1,7 +1,6 @@
 package com.proj.user.service;
 
 import com.proj.user.dto.AddDataRequest;
-import com.proj.user.dto.NotificationData;
 import com.proj.user.model.CustomOAuth2User;
 import com.proj.user.model.NotificationType;
 import com.proj.user.model.Provider;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 import javax.persistence.EntityNotFoundException;
 
@@ -28,7 +26,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
-    private final RestTemplate restTemplate;
 
     public User createNewUserFromOAuth2(CustomOAuth2User customOAuth2User) {
         User newUser = new User();
@@ -135,17 +132,5 @@ public class UserService {
     public void delete(User user) {
         userRepository.delete(user);
         log.info("user with email {} successfully deleted", user.getEmail());
-    }
-
-    public void sendDataToTelegramNotification(String recipientEmail, long senderId) {
-        User recipient = readByEmail(recipientEmail);
-        User sender = readById(senderId);
-        log.info("{} want to receive a message from {}", recipientEmail, sender.getEmail());
-        restTemplate.postForLocation("http://TELEGRAM/api/v1/telegram/send",
-                NotificationData.forTelegram(recipient, sender));
-    }
-
-    public boolean isUsersNotificationTypeTelegram(long id) {
-        return readById(id).getNotificationType().equals(NotificationType.TELEGRAM);
     }
 }

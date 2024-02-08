@@ -1,8 +1,11 @@
-package com.proj.telegramkafka.model;
+package com.proj.emailkafka.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.*;
-import javax.validation.constraints.*;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Builder
 @Getter
@@ -12,8 +15,7 @@ import javax.validation.constraints.*;
 @EqualsAndHashCode
 public class NotificationData {
 
-    @NotNull(message = "The telegram account must started with '@' character")
-    @Pattern(regexp = "^@.+", message = "The telegram account must started with '@' character")
+    @NotEmpty(message = "The email account cannot be empty!")
     private String username;
 
     @NotEmpty(message = "Message must not be empty!")
