@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Component
@@ -14,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 public class EmailListeners {
 
     private final EmailSender emailSender;
-    private final RestTemplate restTemplate;
 
     @KafkaListener(
             topics = "email",
@@ -31,7 +29,6 @@ public class EmailListeners {
             emailSender.sendEmail(notificationData);
         } catch (Exception exception) {
             log.error("Exception while sending email - {}", exception.getMessage());
-            restTemplate.postForLocation("http://USER/api/v1/get-notification/if-success?", false);
         }
     }
 }
