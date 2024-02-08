@@ -1,4 +1,4 @@
-package com.proj.telegramkafka.model;
+package com.proj.emailkafka.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,11 +11,13 @@ import javax.validation.ConstraintViolation;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static com.proj.telegramkafka.TelegramTestAdvice.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.proj.emailkafka.EmailTestAdvice.getViolation;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class NotificationDataTests {
+
     private NotificationData notificationData;
 
     @BeforeEach
@@ -37,14 +39,13 @@ public class NotificationDataTests {
 
         assertEquals(1, violationSet.size());
         assertEquals(error, violationSet.iterator().next().getInvalidValue());
-        assertEquals("The telegram account must started with '@' character", violationSet.iterator().next().getMessage());
+        assertEquals("The email account cannot be empty!", violationSet.iterator().next().getMessage());
 
     }
 
     private static Stream<Arguments> getInvalidUsersTelegram() {
         return Stream.of(
                 Arguments.of("", ""),
-                Arguments.of("@", "@"),
                 Arguments.of(null, null)
         );
     }
