@@ -54,7 +54,7 @@ public class SecurityConfigTests {
     }
 
     @Test
-    public void testSecuredUrlRegister() throws Exception {
+    public void testSecuredUrlRegisterWithTelegram() throws Exception {
         mockMvc.perform(post("/api/v1/auth/register")
                         .param("fullName", "Admin Korniev")
                         .param("email", "created@mail.co")
@@ -64,6 +64,21 @@ public class SecurityConfigTests {
                         .param("notificationType", "Telegram")
                 )
                 .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/api/v1/telegram/bot-url"));
+
+    }
+
+    @Test
+    public void testSecuredUrlRegisterWithEmail() throws Exception {
+        mockMvc.perform(post("/api/v1/auth/register")
+                        .param("fullName", "Admin Korniev")
+                        .param("email", "created@mail.co")
+                        .param("telegram", "@user.test")
+                        .param("password", "1111")
+                        .param("age", "31")
+                        .param("notificationType", "Email")
+                )
+                .andExpect(status().isOk())
                 .andExpect(redirectedUrl("/api/v1/auth/login"));
 
     }
