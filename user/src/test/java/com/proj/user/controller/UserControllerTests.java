@@ -86,7 +86,19 @@ public class UserControllerTests {
         String telegram = "@updated";
         String age = "23";
         String notificationType = "telegram";
-        performUserUpdate(fullName, telegram, age, notificationType);
+
+        long id = getUserId();
+
+        mockMvc.perform(post("/api/v1/users/{id}/update", id)
+                        .param("fullName", fullName)
+                        .param("telegram", telegram)
+                        .param("age", age)
+                        .param("notificationType", notificationType)
+                )
+                .andExpect(status().isFound())
+                .andExpect(redirectedUrl("/api/v1/telegram/bot-url"));
+
+        assertionsForUserUpdate(fullName, telegram, age, notificationType);
     }
 
     @Test
@@ -96,11 +108,6 @@ public class UserControllerTests {
         String telegram = "@updatedad";
         String age = "20";
         String notificationType = "e-mail";
-        performUserUpdate(fullName, telegram, age, notificationType);
-    }
-
-    private void performUserUpdate(String fullName, String telegram,
-                                   String age, String notificationType) throws Exception {
         long id = getUserId();
 
         mockMvc.perform(post("/api/v1/users/{id}/update", id)
