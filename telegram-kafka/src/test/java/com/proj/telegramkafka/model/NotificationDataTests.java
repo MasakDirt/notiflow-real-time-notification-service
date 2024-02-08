@@ -32,7 +32,7 @@ public class NotificationDataTests {
     @ParameterizedTest
     @MethodSource("getInvalidUsersTelegram")
     public void testInvalidRecipientUserTelegram(String recipientUserTelegram, String error) {
-        notificationData.setRecipientUserTelegram(recipientUserTelegram);
+        notificationData.setUsername(recipientUserTelegram);
         Set<ConstraintViolation<NotificationData>> violationSet = getViolation(notificationData);
 
         assertEquals(1, violationSet.size());
@@ -73,7 +73,7 @@ public class NotificationDataTests {
         String recipientUserTelegram = "@recepient";
         String message = "message...";
         NotificationData expected = new NotificationData(recipientUserTelegram, message);
-        String jsonString = String.format("{\"recipientUserTelegram\" : \"%s\", \"message\" : \"%s\"}",
+        String jsonString = String.format("{\"username\" : \"%s\", \"message\" : \"%s\"}",
                 recipientUserTelegram, message);
         NotificationData actual = NotificationData.fromJsonString(jsonString);
         assertEquals(expected, actual);
