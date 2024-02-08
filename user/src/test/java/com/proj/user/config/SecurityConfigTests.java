@@ -76,9 +76,9 @@ public class SecurityConfigTests {
                         .param("telegram", "@user.test")
                         .param("password", "1111")
                         .param("age", "31")
-                        .param("notificationType", "Email")
+                        .param("notificationType", "E-mail")
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/api/v1/auth/login"));
 
     }
